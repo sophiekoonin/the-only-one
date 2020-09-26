@@ -1,30 +1,26 @@
 import { Identity } from './Identity'
-import { PubSubClient } from './PubSubClient'
+
 export class P2PServer {
   identity: Identity
   uniqueId: string
-  pubSub: PubSubClient
+  sendMessage: (message, clientId?: string) => void
+
   state: {
     players: string[]
     currentTurnIndex: number
     started: boolean
   }
 
-  constructor(identity, uniqueId, pubSub) {
+  constructor(identity, uniqueId, sendMessage) {
     this.identity = identity
     this.uniqueId = uniqueId
-    this.pubSub = pubSub
-
+    this.sendMessage = sendMessage
     this.state = { players: [], currentTurnIndex: 0, started: false }
-  }
-
-  async connect() {
-    await this.pubSub.connect(this.identity, this.uniqueId)
   }
 
   async startGame() {
     this.state.started = true
-    this.pubSub.sendMessage({
+    this.sendMessage({
       kind: 'game-start',
       turn: this.state.players[0],
     })
@@ -37,12 +33,13 @@ export class P2PServer {
         ? currentTurnIndex + 1
         : 0
     this.state.currentTurnIndex = newTurnIndex
-    this.pubSub.sendMessage({
+    this.sendMessage({
       kind: 'turn',
       turn: this.state.players[newTurnIndex],
     })
   }
   onReceiveMessage(message) {
+    console.log({ message })
     switch (message.kind) {
       case 'connected':
         this.onClientConnected(message)
@@ -53,10 +50,10 @@ export class P2PServer {
   }
   onClientConnected(message) {
     this.state.players.push(message.metadata)
-    this.pubSub.sendMessage(
+    this.sendMessage(
       { kind: 'connection-acknowledged', serverState: this.state },
       message.metadata.clientId
     )
-    this.pubSub.sendMessage({ kind: 'peer-status', serverState: this.state })
+    this.sendMessage({ kind: 'peer-status', serverState: this.state })
   }
 }

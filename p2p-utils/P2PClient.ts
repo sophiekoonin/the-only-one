@@ -1,11 +1,9 @@
-import { StandardLonghandProperties } from 'csstype'
 import { Identity } from './Identity'
-import { PubSubClient } from './PubSubClient'
 
 export class P2PClient {
   identity: Identity
   uniqueId: string
-  pubSub: PubSubClient
+  sendMessage: (message, clientId?: string) => void
   serverState: string
   state: {
     status: string
@@ -13,10 +11,10 @@ export class P2PClient {
     currentTurn: string
   }
 
-  constructor(identity, uniqueId, pubSub) {
+  constructor(identity, uniqueId, sendMessage) {
     this.identity = identity
     this.uniqueId = uniqueId
-    this.pubSub = pubSub
+    this.sendMessage = sendMessage
 
     this.serverState = null
     this.state = {
@@ -26,11 +24,10 @@ export class P2PClient {
     }
   }
   async connect() {
-    await this.pubSub.connect(this.identity, this.uniqueId)
-
-    this.pubSub.sendMessage({ kind: 'connected' })
+    this.sendMessage({ kind: 'connected' })
     this.state.status = 'awaiting-acknowledgement'
   }
+
   onReceiveMessage(message) {
     if (message.serverState) {
       this.serverState = message.serverState

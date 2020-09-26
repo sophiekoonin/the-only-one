@@ -24,11 +24,10 @@ export default function GamePage() {
 
   async function joinGame(e: React.FormEvent) {
     e.preventDefault()
-    await join(gameId, name)
+    join(gameId, name)
     setPlayerReady(true)
   }
 
-  console.log({ p2pClient })
   return (
     <main>
       <h1>⭐ only one ⭐</h1>

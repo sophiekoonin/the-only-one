@@ -7,9 +7,9 @@ import styles from '../styles/Home.module.css'
 import { generateRandomGameId } from '../utils/randomizer'
 
 export default function Home() {
-  const [name, setName] = React.useState('')
+  const [name, setName] = React.useState('sophie')
   const [error, setError] = React.useState(null)
-  const p2pContext = React.useContext(P2PContext)
+  const { host } = React.useContext(P2PContext)
   const router = useRouter()
 
   async function onSubmit(e: React.FormEvent) {
@@ -19,7 +19,7 @@ export default function Home() {
       return
     }
     const gameId = generateRandomGameId()
-    await p2pContext.host(gameId, name)
+    host(gameId, name)
     router.push('/[gameId]', `/${gameId}`, { shallow: true })
   }
 
