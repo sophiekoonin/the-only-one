@@ -1,4 +1,5 @@
 import * as Ably from 'ably'
+import { Identity } from './Identity'
 
 function shouldHandleMessage(message, metadata) {
   return (
@@ -18,7 +19,7 @@ export function handleMessageFromAbly(message, metadata, p2pClient, p2pServer) {
 export class PubSubClient {
   metadata: {
     uniqueId: string
-    Identity
+    identity: Identity
   }
   channel: Ably.Types.RealtimeChannelPromise
   connected: boolean
