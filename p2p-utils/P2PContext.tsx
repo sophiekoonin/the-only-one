@@ -9,6 +9,7 @@ const defaultContext = {
   pubSub: null,
   p2pClient: null,
   p2pServer: null,
+  playerName: null,
   host: (gameId: string, playerName: string) => {},
   join: (gameId: string, playerName: string) => {},
 }
@@ -18,57 +19,57 @@ type Props = {
 
 export const P2PContext = React.createContext(defaultContext)
 
-export class P2PContextProvider extends React.Component<Props, {}> {
-  pubSub: PubSubClient
-  p2pClient: P2PClient
-  p2pServer?: P2PServer
+export function P2PContextProvider({ children }: Props) {
+  const [pubSub, setPubSub] = React.useState(null)
+  const [p2pClient, setP2pClient] = React.useState(null)
+  const [p2pServer, setP2pServer] = React.useState(null)
+  const [playerName, setPlayerName] = React.useState(null)
 
-  constructor(props: Props) {
-    super(props)
-    this.pubSub = null
-    this.p2pClient = null
-    this.p2pServer = null
-  }
-
-  initPubSub = () => {
-    if (this.pubSub != null) {
-      return isNull
+  function initPubSub() {
+    if (pubSub != null) {
+      return pubSub
     }
-    this.pubSub = new PubSubClient((message, metadata) => {
-      handleMessageFromAbly(message, metadata, this.p2pClient, this.p2pServer)
+    const ps = new PubSubClient((message, metadata) => {
+      handleMessageFromAbly(message, metadata, p2pClient, p2pServer)
     })
+    setPubSub(ps)
+    return ps
   }
 
-  host = async (gameId: string, playerName: string) => {
-    this.initPubSub()
+  async function host(gameId: string, playerName: string) {
+    const ps = initPubSub()
+    setPlayerName(playerName)
     const identity = new Identity(playerName)
-    this.p2pServer = new P2PServer(identity, gameId, this.pubSub)
-    this.p2pClient = new P2PClient(identity, gameId, this.pubSub)
+    const server = new P2PServer(identity, gameId, ps)
+    const client = new P2PClient(identity, gameId, ps)
+    setP2pServer(server)
+    setP2pClient(client)
 
-    await this.p2pServer.connect()
-    await this.p2pClient.connect()
+    await server.connect()
+    await client.connect()
   }
 
-  join = async (gameId: string, playerName: string) => {
-    this.initPubSub()
+  async function join(gameId: string, playerName: string) {
+    const ps = initPubSub()
+    setPlayerName(playerName)
     const identity = new Identity(playerName)
-    this.p2pClient = new P2PClient(identity, gameId, this.pubSub)
-    await this.p2pClient.connect()
+    const client = new P2PClient(identity, gameId, ps)
+    setP2pClient(client)
+    await client.connect()
   }
 
-  render() {
-    return (
-      <P2PContext.Provider
-        value={{
-          pubSub: this.pubSub,
-          p2pClient: this.p2pClient,
-          p2pServer: this.p2pServer,
-          host: this.host,
-          join: this.join,
-        }}
-      >
-        {this.props.children}
-      </P2PContext.Provider>
-    )
-  }
+  return (
+    <P2PContext.Provider
+      value={{
+        pubSub: pubSub,
+        p2pClient: p2pClient,
+        p2pServer: p2pServer,
+        playerName: playerName,
+        host: host,
+        join: join,
+      }}
+    >
+      {children}
+    </P2PContext.Provider>
+  )
 }

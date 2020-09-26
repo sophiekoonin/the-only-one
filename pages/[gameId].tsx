@@ -2,20 +2,60 @@ import React from 'react'
 import { useRouter } from 'next/router'
 import { P2PContext } from '../p2p-utils/P2PContext'
 
-// the player name is passed in as a query string
 export default function GamePage() {
-  const [gameId, setGameId] = React.useState('')
+  const [name, setName] = React.useState('')
+  const [playerReady, setPlayerReady] = React.useState(false)
   const router = useRouter()
-  const { query } = router
 
+  const { query } = router
   const p2pContext = React.useContext(P2PContext)
-  const { p2pServer, p2pClient } = p2pContext
-  const isHost = p2pServer != null
+  const { join, p2pServer, p2pClient, playerName } = p2pContext
+  const gameId = Array.isArray(query.gameId)
+    ? query.gameId[0]
+    : query.gameId || ''
 
   React.useEffect(() => {
-    const { gameId } = query || {}
-    setGameId(Array.isArray(gameId) ? gameId[0] : gameId)
-  }, [query])
+    if (playerName != null && playerName !== '') {
+      setPlayerReady(true)
+    }
+  }, [playerName])
 
-  return <div>Hello world!</div>
+  const isHost = p2pServer != null
+
+  async function joinGame(e: React.FormEvent) {
+    e.preventDefault()
+    await join(gameId, name)
+    setPlayerReady(true)
+  }
+
+  console.log({ p2pClient })
+  return (
+    <main>
+      <h1>⭐ only one ⭐</h1>
+      {isHost && <p>You're the host</p>}
+      {!isHost && !playerReady && (
+        <form onSubmit={joinGame}>
+          <label htmlFor="name">Enter your name</label>
+          <input
+            value={name}
+            id="name"
+            onChange={(e) => setName(e.target.value)}
+          />
+          <button type="submit">Let's go!</button>
+        </form>
+      )}
+      {p2pClient?.serverState?.players != null && (
+        <>
+          <h2>Active players: {p2pClient?.serverState?.players.length}</h2>
+          <ul>
+            {p2pClient?.serverState?.players.map((user) => (
+              <li key={user.friendlyName}>
+                <span>{user.friendlyName}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </main>
+  )
 }

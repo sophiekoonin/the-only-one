@@ -19,7 +19,7 @@ export default function Home() {
       return
     }
     const gameId = generateRandomGameId()
-    await p2pContext.host(name, gameId)
+    await p2pContext.host(gameId, name)
     router.push('/[gameId]', `/${gameId}`, { shallow: true })
   }
 

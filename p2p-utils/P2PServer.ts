@@ -17,19 +17,7 @@ export class P2PServer {
 
     this.state = { players: [], currentTurnIndex: 0, started: false }
   }
-  async sendWordsAcrossMultipleMessages() {
-    const phrase = "Long before his nine o'clock headache appears".split(' ')
-    const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-    for (let word of phrase) {
-      this.pubSub.sendMessage({
-        kind: 'word',
-        word: word,
-        serverState: this.state,
-      })
-      await sleep(500)
-    }
-  }
   async connect() {
     await this.pubSub.connect(this.identity, this.uniqueId)
   }
