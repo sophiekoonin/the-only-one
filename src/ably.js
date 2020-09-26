@@ -27,7 +27,7 @@ export class PubSubClient {
         this.metadata = { uniqueId: uniqueId, ...identity }
 
         const ably = new Ably.Realtime.Promise({
-            authUrl: '/api/?name=createTokenRequest'
+            authUrl: '/api/createToken'
         })
         this.channel = await ably.channels.get(`only-one-${uniqueId}`)
 
