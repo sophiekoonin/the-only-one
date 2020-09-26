@@ -49,6 +49,7 @@ export class P2PServer {
     }
   }
   onClientConnected(message) {
+    console.log('connected yay')
     this.state.players.push(message.metadata)
     this.sendMessage(
       { kind: 'connection-acknowledged', serverState: this.state },

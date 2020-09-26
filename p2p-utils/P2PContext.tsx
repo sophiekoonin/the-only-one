@@ -49,10 +49,7 @@ export function P2PContextProvider({ children }: Props) {
       authUrl: '/api/createToken',
     })
     // @ts-ignore types are too strict
-    const ch = await ably.channels.get(`only-one-${uniqueId}`, {
-      params: { rewind: '1m' },
-    })
-
+    const ch = await ably.channels.get(`only-one-${uniqueId}`)
     ch.subscribe((message) => {
       handleMessageFromAbly(message.data, metadata, p2pClient, p2pServer)
     })
@@ -62,9 +59,9 @@ export function P2PContextProvider({ children }: Props) {
   }
 
   function sendMessage(message, targetClientId?: string) {
-    if (!connected) {
-      throw 'Client is not connected'
-    }
+    // if (!connected) {
+    //   throw 'Client is not connected'
+    // }
 
     message.metadata = metadata
     message.forClientId = targetClientId ? targetClientId : null
