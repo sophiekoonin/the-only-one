@@ -1,15 +1,25 @@
 {
-  "name": "app",
+  "name": "only-one",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start"
   },
   "dependencies": {
+    "@types/ably": "1.0.0",
+    "@types/node": "14.11.2",
+    "@types/react": "16.9.49",
+    "@vercel/node": "1.8.3",
     "next": "9.5.3",
     "react": "16.13.1",
-    "react-dom": "16.13.1"
+    "react-dom": "16.13.1",
+    "typescript": "4.0.3"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": false,
+    "singleQuote": true
   }
 }
