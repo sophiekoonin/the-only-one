@@ -1,8 +1,19 @@
 <template>
     <section class="game-info">
         <h2>UniqueId: {{ uniqueId }}</h2>
-        <button v-if="iAmHost" v-on:click="sendWordsAsHost" class="form-button">
-            Stream words to client
+        <button
+            v-if="iAmHost && !gameStarted"
+            v-on:click="startGame"
+            class="form-button"
+        >
+            Start game
+        </button>
+        <button
+            v-if="iAmHost && gameStarted"
+            v-on:click="advanceTurn"
+            class="form-button"
+        >
+            Next turn
         </button>
         <h3>
             Active players:
@@ -27,9 +38,7 @@
                 <span>{{ user.friendlyName }}</span>
             </li>
         </ul>
-        <div>
-            {{ receivedWords }}
-        </div>
+        <p v-if="gameStarted">It's {{ currentTurn }}'s turn!</p>
     </section>
 </template>
 
@@ -40,8 +49,10 @@ export default {
         'uniqueId',
         'transmittedServerState',
         'iAmHost',
-        'sendWordsAsHost',
-        'receivedWords'
+        'startGame',
+        'advanceTurn',
+        'gameStarted',
+        'currentTurn'
     ]
 }
 </script>
