@@ -29,7 +29,9 @@ export class PubSubClient {
         const ably = new Ably.Realtime.Promise({
             authUrl: '/api/createToken'
         })
-        this.channel = await ably.channels.get(`only-one-${uniqueId}`)
+        this.channel = await ably.channels.get(`only-one-${uniqueId}`, {
+            params: { rewind: '1m' }
+        })
 
         this.channel.subscribe(message => {
             this.onMessageReceivedCallback(message.data, this.metadata)

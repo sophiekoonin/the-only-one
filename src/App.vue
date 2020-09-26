@@ -12,11 +12,19 @@
             }}
         </p>
         <create-game-form
-            v-bind:joinedOrHosting="joinedOrHosting"
+            v-if="!joinedOrHosting"
             v-bind:join="join"
             v-bind:host="host"
             v-bind:friendlyName="friendlyName"
             v-bind:uniqueId="uniqueId"
+        />
+        <game-info
+            v-else
+            v-bind:uniqueId="uniqueId"
+            v-bind:iAmHost="iAmHost"
+            v-bind:transmittedServerState="transmittedServerState"
+            v-bind:sendWordsAsHost="sendWordsAsHost"
+            v-bind:receivedWords="state.receivedWords"
         />
     </div>
 </template>
@@ -26,11 +34,13 @@ import { P2PClient, P2PServer } from './p2p'
 import { PubSubClient, handleMessageFromAbly } from './ably'
 import { Identity } from './identity'
 import CreateGameForm from './components/CreateGameForm'
+import GameInfo from './components/GameInfo'
 
 export default {
     name: 'App',
     components: {
-        'create-game-form': CreateGameForm
+        'create-game-form': CreateGameForm,
+        'game-info': GameInfo
     },
     data: () => ({
         p2pClient: null,
@@ -100,6 +110,10 @@ export default {
             )
 
             await this.p2pClient.connect()
+        },
+        sendWordsAsHost: async function(evt) {
+            evt.preventDefault()
+            await this.p2pServer.sendWordsAcrossMultipleMessages()
         }
     }
 }

@@ -1,5 +1,5 @@
 <template>
-    <form class="form" v-if="!joinedOrHosting">
+    <form class="form">
         <label for="session-name">Enter a name for your session</label>
         <input type="text" name="session-name" v-model="uniqueId" />
         <label for="name-name">Enter your name</label>
@@ -15,6 +15,6 @@
 <script>
 export default {
     name: 'CreateGameForm',
-    props: ['joinedOrHosting', 'host', 'join', 'friendlyName', 'uniqueId']
+    props: ['host', 'join', 'friendlyName', 'uniqueId']
 }
 </script>
