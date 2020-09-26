@@ -1,21 +1,34 @@
+import { StandardLonghandProperties } from 'csstype'
+import { Identity } from './Identity'
+import { PubSubClient } from './PubSubClient'
+
 export class P2PClient {
-  constructor(identity, uniqueId, ably) {
+  identity: Identity
+  uniqueId: string
+  pubSub: PubSubClient
+  serverState: string
+  state: {
+    status: string
+    gameStarted: boolean
+    currentTurn: string
+  }
+
+  constructor(identity, uniqueId, pubSub) {
     this.identity = identity
     this.uniqueId = uniqueId
-    this.ably = ably
+    this.pubSub = pubSub
 
     this.serverState = null
     this.state = {
       status: 'disconnected',
-      receivedWords: '',
       gameStarted: false,
       currentTurn: '',
     }
   }
   async connect() {
-    await this.ably.connect(this.identity, this.uniqueId)
+    await this.pubSub.connect(this.identity, this.uniqueId)
 
-    this.ably.sendMessage({ kind: 'connected' })
+    this.pubSub.sendMessage({ kind: 'connected' })
     this.state.status = 'awaiting-acknowledgement'
   }
   onReceiveMessage(message) {
@@ -26,9 +39,6 @@ export class P2PClient {
     switch (message.kind) {
       case 'connected':
         this.state.status = 'acknowledged'
-        break
-      case 'word':
-        this.state.receivedWords += ' ' + message.word
         break
       case 'turn':
         this.state.currentTurn = message.turn

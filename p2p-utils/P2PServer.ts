@@ -1,8 +1,19 @@
+import { Identity } from './Identity'
+import { PubSubClient } from './PubSubClient'
 export class P2PServer {
-  constructor(identity, uniqueId, ably) {
+  identity: Identity
+  uniqueId: string
+  pubSub: PubSubClient
+  state: {
+    players: string[]
+    currentTurnIndex: number
+    started: boolean
+  }
+
+  constructor(identity, uniqueId, pubSub) {
     this.identity = identity
     this.uniqueId = uniqueId
-    this.ably = ably
+    this.pubSub = pubSub
 
     this.state = { players: [], currentTurnIndex: 0, started: false }
   }
@@ -11,7 +22,7 @@ export class P2PServer {
     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
     for (let word of phrase) {
-      this.ably.sendMessage({
+      this.pubSub.sendMessage({
         kind: 'word',
         word: word,
         serverState: this.state,
@@ -20,12 +31,12 @@ export class P2PServer {
     }
   }
   async connect() {
-    await this.ably.connect(this.identity, this.uniqueId)
+    await this.pubSub.connect(this.identity, this.uniqueId)
   }
 
   async startGame() {
     this.state.started = true
-    this.ably.sendMessage({
+    this.pubSub.sendMessage({
       kind: 'game-start',
       turn: this.state.players[0],
     })
@@ -38,7 +49,7 @@ export class P2PServer {
         ? currentTurnIndex + 1
         : 0
     this.state.currentTurnIndex = newTurnIndex
-    this.ably.sendMessage({
+    this.pubSub.sendMessage({
       kind: 'turn',
       turn: this.state.players[newTurnIndex],
     })
@@ -54,10 +65,10 @@ export class P2PServer {
   }
   onClientConnected(message) {
     this.state.players.push(message.metadata)
-    this.ably.sendMessage(
+    this.pubSub.sendMessage(
       { kind: 'connection-acknowledged', serverState: this.state },
       message.metadata.clientId
     )
-    this.ably.sendMessage({ kind: 'peer-status', serverState: this.state })
+    this.pubSub.sendMessage({ kind: 'peer-status', serverState: this.state })
   }
 }

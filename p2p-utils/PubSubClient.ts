@@ -16,8 +16,13 @@ export function handleMessageFromAbly(message, metadata, p2pClient, p2pServer) {
 }
 
 export class PubSubClient {
+  metadata: {
+    uniqueId: string
+    Identity
+  }
+  channel: Ably.Types.RealtimeChannelPromise
   connected: boolean
-  onMessageReceivedCallback: () => void
+  onMessageReceivedCallback: (data, metadata) => void
 
   constructor(onMessageReceivedCallback) {
     this.connected = false
@@ -32,6 +37,7 @@ export class PubSubClient {
     const ably = new Ably.Realtime.Promise({
       authUrl: '/api/createToken',
     })
+    // @ts-ignore types are too strict
     this.channel = await ably.channels.get(`only-one-${uniqueId}`, {
       params: { rewind: '1m' },
     })
@@ -43,7 +49,7 @@ export class PubSubClient {
     this.connected = true
   }
 
-  sendMessage(message, targetClientId) {
+  sendMessage(message, targetClientId?: string) {
     if (!this.connected) {
       throw 'Client is not connected'
     }
