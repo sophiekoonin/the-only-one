@@ -1,4 +1,6 @@
-const WORDS = [
+import PlaceholderRenderer from '../../components/PlaceholderRenderer'
+
+export const WORDS = [
   'aeroplane',
   'camping',
   'war',
@@ -247,3 +249,9 @@ const ANIMALS = []
 const PEOPLE = []
 const THINGS = ['rock']
 const PLACES = []
+
+export function chooseWord(words: string[]) {
+  const newWord = WORDS[Math.floor(Math.random() * WORDS.length)]
+  if (words.includes(newWord)) return chooseWord(words)
+  return newWord
+}

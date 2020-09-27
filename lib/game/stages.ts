@@ -1,4 +1,6 @@
+import JoinStage from '../../components/JoinStage/JoinStage'
 import PlaceholderRenderer from '../../components/PlaceholderRenderer'
+import SubmitWordStage from '../../components/SubmitWordStage/SubmitWordStage'
 
 export const GameStageIds = Object.freeze({
   JOIN: 'join',
@@ -13,15 +15,11 @@ export const GameStageIds = Object.freeze({
 export const GameStages = Object.freeze({
   [GameStageIds.JOIN]: {
     nextStage: GameStageIds.GAME_START,
-    Renderer: PlaceholderRenderer,
-  },
-  [GameStageIds.GAME_START]: {
-    nextStage: GameStageIds.SUBMIT_WORD,
-    Renderer: PlaceholderRenderer,
+    Renderer: JoinStage,
   },
   [GameStageIds.SUBMIT_WORD]: {
     nextStage: GameStageIds.COMPARE_WORDS,
-    Renderer: PlaceholderRenderer,
+    Renderer: SubmitWordStage,
   },
   [GameStageIds.COMPARE_WORDS]: {
     nextStage: GameStageIds.PLAYER_GUESS,

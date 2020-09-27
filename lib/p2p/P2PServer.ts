@@ -1,4 +1,5 @@
 import { GameStageIds, GameStages } from '../game/stages'
+import { chooseWord } from '../game/wordPicker'
 import { AblyClient } from './AblyClient'
 import { Identity } from './Identity'
 
@@ -6,7 +7,8 @@ export type ServerState = {
   players: string[]
   currentTurnIndex: number
   started: boolean
-  words: WordSubmission[]
+  playerWords: WordSubmission[]
+  words: string[]
   currentStage: string
 }
 
@@ -31,12 +33,16 @@ export class P2PServer {
       currentTurnIndex: 0,
       currentStage: GameStageIds.JOIN,
       started: false,
+      playerWords: [],
       words: [],
     }
   }
 
   async startGame() {
     this.state.started = true
+    this.state.words.push(chooseWord(this.state.words))
+
+    this.state.currentStage = GameStageIds.SUBMIT_WORD
     this.ably.sendMessage({
       kind: 'game-start',
       turn: this.state.players[0],
@@ -50,6 +56,7 @@ export class P2PServer {
       currentTurnIndex < this.state.players.length - 1
         ? currentTurnIndex + 1
         : 0
+    this.state.words.push(chooseWord(this.state.words))
     this.state.currentTurnIndex = newTurnIndex
     this.ably.sendMessage({
       kind: 'turn',
@@ -67,13 +74,12 @@ export class P2PServer {
     })
   }
   onReceiveMessage(message) {
-    console.log({ message })
     switch (message.kind) {
       case 'connected':
         this.onClientConnected(message)
         break
       case 'word':
-        this.state.words.push({
+        this.state.playerWords.push({
           word: message.word,
           clientId: message.metadata.clientId,
           playerName: message.metadata.friendlyName,

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useRouter } from 'next/router'
 import { P2PContext } from '../lib/p2p/P2PContext'
-import PreStartView from '../components/PreStartView'
+import PreStartView from '../components/JoinStage/JoinStage'
 import GameView from '../components/GameView'
 
 export default function GamePage() {

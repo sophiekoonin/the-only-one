@@ -1,9 +1,9 @@
 import { useContext, useState, useEffect } from 'react'
-import { P2PContext } from '../lib/p2p/P2PContext'
+import { P2PContext } from '../../lib/p2p/P2PContext'
 
 type Props = { gameId: string }
 
-export default function PreStartView({ gameId }) {
+export default function JoinStage({ gameId }) {
   const [name, setName] = useState('')
 
   const p2pContext = useContext(P2PContext)

@@ -18,5 +18,5 @@ export default function GameView({ gameId }) {
   const currentPlayer = players[currentTurnIndex]
 
   const CurrentStageRenderer = GameStages[currentStage].Renderer
-  return <CurrentStageRenderer />
+  return <CurrentStageRenderer gameId={gameId} />
 }
