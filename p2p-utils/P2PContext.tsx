@@ -1,23 +1,9 @@
 import React from 'react'
-import * as Ably from 'ably'
+
 import { Identity } from './Identity'
 import { P2PClient } from './P2PClient'
 import { P2PServer } from './P2PServer'
-
-function shouldHandleMessage(message, metadata) {
-  return (
-    message.forClientId == null ||
-    !message.forClientId ||
-    (message.forClientId && message.forClientId === metadata.clientId)
-  )
-}
-
-export function handleMessageFromAbly(message, metadata, p2pClient, p2pServer) {
-  if (shouldHandleMessage(message, metadata)) {
-    p2pServer?.onReceiveMessage(message)
-    p2pClient?.onReceiveMessage(message)
-  }
-}
+import { AblyClient } from './AblyClient'
 
 const defaultContext = {
   p2pClient: null,
@@ -32,74 +18,71 @@ type Props = {
 
 export const P2PContext = React.createContext(defaultContext)
 
-export function P2PContextProvider({ children }: Props) {
-  const [p2pClient, setP2pClient] = React.useState(null)
-  const [p2pServer, setP2pServer] = React.useState(null)
-  const [playerName, setPlayerName] = React.useState(null)
-  const [connected, setConnected] = React.useState(false)
-  const [channel, setChannel] = React.useState(null)
-  const [metadata, setMetadata] = React.useState(null)
+export class P2PContextProvider extends React.Component {
+  state = {
+    connected: false,
+    playerName: null,
+    p2pServer: null,
+    p2pClient: null,
+    ably: null,
+  }
 
-  async function connect(identity, uniqueId) {
-    if (connected) return
+  constructor(props: Props) {
+    super(props)
+  }
 
-    setMetadata({ uniqueId: uniqueId, ...identity })
+  async connect(identity, uniqueId) {
+    if (this.state.connected === true) return
 
-    const ably = new Ably.Realtime.Promise({
-      authUrl: '/api/createToken',
+    const ably = new AblyClient(identity, uniqueId)
+    await this.setState({ ably })
+
+    await this.state.ably.connect((message) => {
+      this.state.p2pServer?.onReceiveMessage(message)
+      this.state.p2pClient?.onReceiveMessage(message)
     })
-    // @ts-ignore types are too strict
-    const ch = await ably.channels.get(`only-one-${uniqueId}`)
-    ch.subscribe((message) => {
-      handleMessageFromAbly(message.data, metadata, p2pClient, p2pServer)
+  }
+
+  async host(gameId: string, playerName: string) {
+    const identity = new Identity(playerName)
+    debugger
+    await this.connect(identity, gameId)
+    const server = new P2PServer(identity, gameId, this.state.ably)
+    const client = new P2PClient(identity, gameId, this.state.ably)
+    await this.setState({
+      p2pServer: server,
+      p2pClient: client,
+      playerName,
     })
-
-    setChannel(ch)
-    setConnected(true)
+    await client.connect()
   }
 
-  function sendMessage(message, targetClientId?: string) {
-    // if (!connected) {
-    //   throw 'Client is not connected'
-    // }
-
-    message.metadata = metadata
-    message.forClientId = targetClientId ? targetClientId : null
-    channel.publish({ name: 'only-one-message', data: message })
-  }
-
-  async function host(gameId: string, playerName: string) {
-    setPlayerName(playerName)
+  async join(gameId: string, playerName: string) {
     const identity = new Identity(playerName)
-    const server = new P2PServer(identity, gameId, sendMessage)
-    const client = new P2PClient(identity, gameId, sendMessage)
-    setP2pServer(server)
-    setP2pClient(client)
-    await connect(identity, gameId)
-
-    client.connect()
+    await this.connect(identity, gameId)
+    const client = new P2PClient(identity, gameId, this.state.ably)
+    await this.setState({
+      p2pClient: client,
+      playerName,
+    })
+    await client.connect()
   }
 
-  async function join(gameId: string, playerName: string) {
-    setPlayerName(playerName)
-    const identity = new Identity(playerName)
-    const client = new P2PClient(identity, gameId, sendMessage)
-    setP2pClient(client)
-    await connect(identity, gameId)
-    client.connect()
-  }
+  render() {
+    const { p2pClient, p2pServer, playerName } = this.state
 
-  return (
-    <P2PContext.Provider
-      value={{
-        p2pClient,
-        p2pServer,
-        playerName,
-        host,
-        join,
-      }}
-    >
-      {children}
-    </P2PContext.Provider>
-  )
+    return (
+      <P2PContext.Provider
+        value={{
+          p2pClient,
+          p2pServer,
+          playerName,
+          host: this.host.bind(this),
+          join: this.join.bind(this),
+        }}
+      >
+        {this.props.children}
+      </P2PContext.Provider>
+    )
+  }
 }

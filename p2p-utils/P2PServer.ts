@@ -1,7 +1,9 @@
+import { AblyClient } from './AblyClient'
 import { Identity } from './Identity'
 
 export class P2PServer {
   identity: Identity
+  ably: AblyClient
   uniqueId: string
   sendMessage: (message, clientId?: string) => void
 
@@ -11,16 +13,16 @@ export class P2PServer {
     started: boolean
   }
 
-  constructor(identity, uniqueId, sendMessage) {
+  constructor(identity, uniqueId, ably) {
     this.identity = identity
     this.uniqueId = uniqueId
-    this.sendMessage = sendMessage
+    this.ably = ably
     this.state = { players: [], currentTurnIndex: 0, started: false }
   }
 
   async startGame() {
     this.state.started = true
-    this.sendMessage({
+    this.ably.sendMessage({
       kind: 'game-start',
       turn: this.state.players[0],
     })
@@ -51,10 +53,10 @@ export class P2PServer {
   onClientConnected(message) {
     console.log('connected yay')
     this.state.players.push(message.metadata)
-    this.sendMessage(
+    this.ably.sendMessage(
       { kind: 'connection-acknowledged', serverState: this.state },
       message.metadata.clientId
     )
-    this.sendMessage({ kind: 'peer-status', serverState: this.state })
+    this.ably.sendMessage({ kind: 'peer-status', serverState: this.state })
   }
 }
