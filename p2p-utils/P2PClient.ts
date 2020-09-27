@@ -1,24 +1,25 @@
 import { AblyClient } from './AblyClient'
 import { Identity } from './Identity'
+import { ServerState } from './P2PServer'
 
 export class P2PClient {
   identity: Identity
   ably: AblyClient
   uniqueId: string
   sendMessage: (message, clientId?: string) => void
-  serverState: string
   state: {
     status: string
     gameStarted: boolean
     currentTurn: string
   }
+  onServerStateUpdate: (serverState: ServerState) => void
 
-  constructor(identity, uniqueId, ably) {
+  constructor(identity, uniqueId, ably, onServerStateUpdate) {
     this.identity = identity
     this.uniqueId = uniqueId
     this.ably = ably
 
-    this.serverState = null
+    this.onServerStateUpdate = onServerStateUpdate
     this.state = {
       status: 'disconnected',
       gameStarted: false,
@@ -32,7 +33,7 @@ export class P2PClient {
 
   onReceiveMessage(message) {
     if (message.serverState) {
-      this.serverState = message.serverState
+      this.onServerStateUpdate(message.serverState)
     }
 
     switch (message.kind) {

@@ -9,7 +9,14 @@ export default function GamePage() {
 
   const { query } = router
   const p2pContext = React.useContext(P2PContext)
-  const { join, p2pServer, p2pClient, playerName } = p2pContext
+  const {
+    join,
+    p2pServer,
+    p2pClient,
+    players,
+    currentTurnIndex,
+    playerName,
+  } = p2pContext
   const gameId = Array.isArray(query.gameId)
     ? query.gameId[0]
     : query.gameId || ''
@@ -43,11 +50,11 @@ export default function GamePage() {
           <button type="submit">Let's go!</button>
         </form>
       )}
-      {p2pClient?.serverState?.players != null && (
+      {players != null && (
         <>
-          <h2>Active players: {p2pClient?.serverState?.players.length}</h2>
+          <h2>Active players: {players.length}</h2>
           <ul>
-            {p2pClient?.serverState?.players.map((user) => (
+            {players.map((user) => (
               <li key={user.friendlyName}>
                 <span>{user.friendlyName}</span>
               </li>

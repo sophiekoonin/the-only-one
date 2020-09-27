@@ -1,17 +1,19 @@
 import { AblyClient } from './AblyClient'
 import { Identity } from './Identity'
 
+export type ServerState = {
+  players: string[]
+  currentTurnIndex: number
+  started: boolean
+}
+
 export class P2PServer {
   identity: Identity
   ably: AblyClient
   uniqueId: string
   sendMessage: (message, clientId?: string) => void
 
-  state: {
-    players: string[]
-    currentTurnIndex: number
-    started: boolean
-  }
+  state: ServerState
 
   constructor(identity, uniqueId, ably) {
     this.identity = identity
@@ -41,7 +43,6 @@ export class P2PServer {
     })
   }
   onReceiveMessage(message) {
-    console.log(message.kind)
     switch (message.kind) {
       case 'connected':
         this.onClientConnected(message)

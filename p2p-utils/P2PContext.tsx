@@ -2,13 +2,16 @@ import React from 'react'
 
 import { Identity } from './Identity'
 import { P2PClient } from './P2PClient'
-import { P2PServer } from './P2PServer'
+import { P2PServer, ServerState } from './P2PServer'
 import { AblyClient } from './AblyClient'
 
 const defaultContext = {
   p2pClient: null,
   p2pServer: null,
   playerName: null,
+  players: null,
+  started: false,
+  currentTurnIndex: 0,
   host: (gameId: string, playerName: string) => {},
   join: (gameId: string, playerName: string) => {},
 }
@@ -25,12 +28,18 @@ export class P2PContextProvider extends React.Component {
     p2pServer: null,
     p2pClient: null,
     ably: null,
+    players: null,
+    started: false,
+    currentTurnIndex: 0,
   }
 
   constructor(props: Props) {
     super(props)
   }
 
+  onServerStateUpdate(serverState: ServerState) {
+    this.setState({ ...serverState })
+  }
   async connect(identity, uniqueId) {
     if (this.state.connected === true) return
 
@@ -48,7 +57,12 @@ export class P2PContextProvider extends React.Component {
     debugger
     await this.connect(identity, gameId)
     const server = new P2PServer(identity, gameId, this.state.ably)
-    const client = new P2PClient(identity, gameId, this.state.ably)
+    const client = new P2PClient(
+      identity,
+      gameId,
+      this.state.ably,
+      this.onServerStateUpdate.bind(this)
+    )
     await this.setState({
       p2pServer: server,
       p2pClient: client,
@@ -60,7 +74,12 @@ export class P2PContextProvider extends React.Component {
   async join(gameId: string, playerName: string) {
     const identity = new Identity(playerName)
     await this.connect(identity, gameId)
-    const client = new P2PClient(identity, gameId, this.state.ably)
+    const client = new P2PClient(
+      identity,
+      gameId,
+      this.state.ably,
+      this.onServerStateUpdate.bind(this)
+    )
     await this.setState({
       p2pClient: client,
       playerName,
@@ -69,7 +88,14 @@ export class P2PContextProvider extends React.Component {
   }
 
   render() {
-    const { p2pClient, p2pServer, playerName } = this.state
+    const {
+      p2pClient,
+      p2pServer,
+      playerName,
+      players,
+      started,
+      currentTurnIndex,
+    } = this.state
 
     return (
       <P2PContext.Provider
@@ -77,6 +103,9 @@ export class P2PContextProvider extends React.Component {
           p2pClient,
           p2pServer,
           playerName,
+          players,
+          started,
+          currentTurnIndex,
           host: this.host.bind(this),
           join: this.join.bind(this),
         }}
