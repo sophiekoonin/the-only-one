@@ -31,6 +31,9 @@ export class P2PClient {
     this.state.status = 'awaiting-acknowledgement'
   }
 
+  onSubmitWord(word: string) {
+    this.ably.sendMessage({ kind: 'word', word })
+  }
   onReceiveMessage(message) {
     if (message.serverState) {
       this.onServerStateUpdate(message.serverState)

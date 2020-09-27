@@ -5,6 +5,12 @@ export type ServerState = {
   players: string[]
   currentTurnIndex: number
   started: boolean
+  words: WordSubmission[]
+}
+
+type WordSubmission = {
+  clientId: string
+  word: string
 }
 
 export class P2PServer {
@@ -12,14 +18,13 @@ export class P2PServer {
   ably: AblyClient
   uniqueId: string
   sendMessage: (message, clientId?: string) => void
-
   state: ServerState
 
   constructor(identity, uniqueId, ably) {
     this.identity = identity
     this.uniqueId = uniqueId
     this.ably = ably
-    this.state = { players: [], currentTurnIndex: 0, started: false }
+    this.state = { players: [], currentTurnIndex: 0, started: false, words: [] }
   }
 
   async startGame() {
@@ -49,6 +54,11 @@ export class P2PServer {
       case 'connected':
         this.onClientConnected(message)
         break
+      case 'word':
+        this.state.words.push({
+          word: message.word,
+          clientId: message.metadata.clientId,
+        })
       default:
         break
     }
