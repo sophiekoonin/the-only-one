@@ -1,4 +1,4 @@
-import PlaceholderRenderer from '../../components/CompareWordsStage/PlaceholderRenderer'
+import PlaceholderRenderer from '../../components/PlaceholderRenderer'
 
 export const GameStageIds = Object.freeze({
   JOIN: 'join',
