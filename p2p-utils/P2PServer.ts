@@ -41,7 +41,7 @@ export class P2PServer {
     })
   }
   onReceiveMessage(message) {
-    console.log({ message })
+    console.log(message.kind)
     switch (message.kind) {
       case 'connected':
         this.onClientConnected(message)
@@ -51,7 +51,6 @@ export class P2PServer {
     }
   }
   onClientConnected(message) {
-    console.log('connected yay')
     this.state.players.push(message.metadata)
     this.ably.sendMessage(
       { kind: 'connection-acknowledged', serverState: this.state },

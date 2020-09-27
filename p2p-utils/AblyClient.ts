@@ -31,8 +31,9 @@ export class AblyClient {
       `only-one-${this.metadata.uniqueId}`
     )
     this.channel.subscribe((message) => {
+      console.log({ message })
       if (this.shouldHandleMessage(message)) {
-        callback(message)
+        callback(message.data)
       }
     })
   }
