@@ -6,11 +6,9 @@ export class P2PClient {
   identity: Identity
   ably: AblyClient
   uniqueId: string
-  sendMessage: (message, clientId?: string) => void
   state: {
     status: string
     gameStarted: boolean
-    currentTurn: string
   }
   onServerStateUpdate: (serverState: ServerState) => void
 
@@ -23,7 +21,6 @@ export class P2PClient {
     this.state = {
       status: 'disconnected',
       gameStarted: false,
-      currentTurn: '',
     }
   }
   async connect() {
@@ -43,12 +40,8 @@ export class P2PClient {
       case 'connected':
         this.state.status = 'acknowledged'
         break
-      case 'turn':
-        this.state.currentTurn = message.turn
-        break
       case 'game-start':
         this.state.gameStarted = true
-        this.state.currentTurn = message.turn
         break
       default:
         break

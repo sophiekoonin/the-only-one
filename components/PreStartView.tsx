@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from 'react'
-import { P2PContext } from '../p2p-utils/P2PContext'
+import { P2PContext } from '../lib/p2p/P2PContext'
 
 type Props = { gameId: string }
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useRouter } from 'next/router'
-import { P2PContext } from '../p2p-utils/P2PContext'
+import { P2PContext } from '../lib/p2p/P2PContext'
 import PreStartView from '../components/PreStartView'
 import GameView from '../components/GameView'
 

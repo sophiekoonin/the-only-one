@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 import React from 'react'
-import { P2PContext } from '../p2p-utils/P2PContext'
+import { P2PContext } from '../lib/p2p/P2PContext'
 import styles from '../styles/Home.module.css'
 import { generateRandomGameId } from '../utils/randomizer'
 

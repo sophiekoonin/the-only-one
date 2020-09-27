@@ -1,7 +1,7 @@
 import '../styles/globals.css'
 
 import { AppProps } from 'next/app'
-import { P2PContextProvider } from '../p2p-utils/P2PContext'
+import { P2PContextProvider } from '../lib/p2p/P2PContext'
 
 function App({ Component, pageProps }: AppProps) {
   return (
