@@ -4,11 +4,13 @@ import { Identity } from './Identity'
 import { P2PClient } from './P2PClient'
 import { P2PServer, ServerState } from './P2PServer'
 import { AblyClient } from './AblyClient'
+import { string } from 'prop-types'
 
 const defaultContext = {
   p2pClient: null,
   p2pServer: null,
   playerName: null,
+  clientId: null,
   players: null,
   started: false,
   currentTurnIndex: 0,
@@ -25,6 +27,7 @@ export class P2PContextProvider extends React.Component {
   state = {
     connected: false,
     playerName: null,
+    clientId: null,
     p2pServer: null,
     p2pClient: null,
     ably: null,
@@ -54,7 +57,6 @@ export class P2PContextProvider extends React.Component {
 
   async host(gameId: string, playerName: string) {
     const identity = new Identity(playerName)
-    debugger
     await this.connect(identity, gameId)
     const server = new P2PServer(identity, gameId, this.state.ably)
     const client = new P2PClient(
@@ -67,6 +69,7 @@ export class P2PContextProvider extends React.Component {
       p2pServer: server,
       p2pClient: client,
       playerName,
+      clientId: identity.clientId,
     })
     await client.connect()
   }
@@ -94,6 +97,7 @@ export class P2PContextProvider extends React.Component {
       playerName,
       players,
       started,
+      clientId,
       currentTurnIndex,
     } = this.state
 
@@ -103,6 +107,7 @@ export class P2PContextProvider extends React.Component {
           p2pClient,
           p2pServer,
           playerName,
+          clientId,
           players,
           started,
           currentTurnIndex,

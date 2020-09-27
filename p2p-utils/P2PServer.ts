@@ -27,6 +27,7 @@ export class P2PServer {
     this.ably.sendMessage({
       kind: 'game-start',
       turn: this.state.players[0],
+      serverState: this.state,
     })
   }
 
@@ -40,6 +41,7 @@ export class P2PServer {
     this.sendMessage({
       kind: 'turn',
       turn: this.state.players[newTurnIndex],
+      serverState: this.state,
     })
   }
   onReceiveMessage(message) {
