@@ -1,4 +1,5 @@
 import * as Ably from 'ably'
+import { AblyStub } from './AblyStub'
 import { Identity } from './Identity'
 
 export class AblyClient {
@@ -13,9 +14,13 @@ export class AblyClient {
   constructor(identity: Identity, uniqueId: string) {
     this.channel = null
     this.metadata = { uniqueId: uniqueId, ...identity }
-    this.ably = new Ably.Realtime.Promise({
-      authUrl: '/api/createToken',
-    })
+    // @ts-ignore
+    this.ably =
+      process.env.NODE_ENV === 'production'
+        ? new Ably.Realtime.Promise({
+            authUrl: '/api/createToken',
+          })
+        : new AblyStub()
   }
 
   shouldHandleMessage(message) {
