@@ -84,12 +84,12 @@ export class P2PServer {
           clientId: message.metadata.clientId,
           playerName: message.metadata.friendlyName,
         })
+        // once everyone except current turn player has submitted words
+        // we move on to next stage
+        if (this.state.playerWords.length === this.state.players.length - 1) {
+          this.advanceTurn()
+        }
         break
-      // // once everyone except current turn player has submitted words
-      // // we move on to next stage
-      // if (this.state.words.length === this.state.players.length - 1) {
-      //   this.advanceTurn()
-      // }
       default:
         break
     }
