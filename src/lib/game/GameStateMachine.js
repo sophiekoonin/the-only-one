@@ -19,6 +19,8 @@ export class GameStateMachine {
 
         this.state = {
             words: [],
+            clues: [],
+            dupes: [],
             msInCurrentStep: 0,
             currentTurnIndex: -1,
             activePlayers: [],

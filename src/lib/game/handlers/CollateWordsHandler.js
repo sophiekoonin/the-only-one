@@ -19,7 +19,7 @@ export class CollateWordsHandler {
         )
         // wait 10s
         await new Promise(resolve => {
-            setTimeout(resolve, 10000)
+            setTimeout(resolve, 1000000)
         })
 
         return { transitionTo: 'PlayerGuessHandler' }

@@ -24,9 +24,11 @@ export default {
         }
     },
     created: function() {
-        const uri = window.location.search.substring(1)
-        const params = new URLSearchParams(uri)
-        this.gameId = params.get('gameId')
+        if (window.location.search !== '') {
+            const uri = window.location.search.substring(1)
+            const params = new URLSearchParams(uri)
+            this.gameId = params.get('gameId')
+        }
     },
     methods: {
         startHosting: async function(evt) {

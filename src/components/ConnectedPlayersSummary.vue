@@ -2,23 +2,13 @@
     <section class="game-info">
         <h3>
             Active players:
-            {{
-                transmittedServerState != null
-                    ? transmittedServerState.players.length
-                    : 0
-            }}
+            {{ state != null ? state.players.length : 0 }}
         </h3>
-        <ul
-            v-if="
-                transmittedServerState != null &&
-                    transmittedServerState.players != null
-            "
-            class="players"
-        >
+        <ul v-if="state != null && state.players != null" class="players">
             <li
                 class="player"
                 v-bind:key="user.friendlyName"
-                v-for="user in transmittedServerState.players"
+                v-for="user in state.players"
             >
                 <span>{{ user.friendlyName }}</span>
             </li>
@@ -29,6 +19,6 @@
 <script>
 export default {
     name: 'ConnectedPlayersSummary',
-    props: ['transmittedServerState']
+    props: ['state']
 }
 </script>

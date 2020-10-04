@@ -24,6 +24,7 @@ export class P2PClient {
     }
 
     onReceiveMessage(message) {
+        console.table(message)
         if (message.serverState) {
             this.serverState = message.serverState
         }

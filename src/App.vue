@@ -11,11 +11,11 @@
             v-else
             :isHost="isHost"
             :gameId="gameId"
-            :state="transmittedServerState"
+            :clientState="state"
+            :transmittedServerState="transmittedServerState"
             :client="gameClient"
             :gameCanBeStarted="gameCanBeStarted"
             :startGame="startGame"
-            :lastInstruction="state.lastInstruction"
         />
     </div>
 </template>

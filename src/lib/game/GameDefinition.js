@@ -13,9 +13,9 @@ export const Game = handlerContext =>
         steps: {
             StartHandler: new StartHandler(),
             NewRoundHandler: new NewRoundHandler(),
-            PlayerSubmitWordHandler: new PlayerSubmitWordHandler(30_000),
+            PlayerSubmitWordHandler: new PlayerSubmitWordHandler(3000_000),
             CollateWordsHandler: new CollateWordsHandler(),
-            PlayerGuessHandler: new PlayerGuessHandler(30_000),
+            PlayerGuessHandler: new PlayerGuessHandler(3000_000),
             EndHandler: new EndHandler()
         },
         context: handlerContext

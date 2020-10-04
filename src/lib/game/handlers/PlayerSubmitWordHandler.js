@@ -18,12 +18,12 @@ export class PlayerSubmitWordHandler {
     async execute(state, context) {
         this.submitted = 0
 
-        state.nonTurnPlayers.forEach(player =>
+        state.players.forEach(player =>
             context.channel.sendMessage(
                 {
                     kind: 'instruction',
                     type: GameStageMessageTypes.SUBMIT_WORD_REQUEST,
-                    value: state.currentWord,
+                    value: state.words[state.words.length - 1],
                     timeout: this.userTimeoutPromptAt
                 },
                 player.clientId
