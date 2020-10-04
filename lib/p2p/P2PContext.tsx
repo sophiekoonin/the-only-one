@@ -1,4 +1,5 @@
 import React from 'react'
+import Ably from 'ably'
 
 import { Identity } from './Identity'
 import { P2PClient } from './P2PClient'
@@ -15,6 +16,8 @@ const defaultContext = {
   words: null,
   currentTurnIndex: 0,
   currentStage: null,
+  connectionState: null,
+  disconnect: () => {},
   host: (gameId: string, playerName: string) => {},
   join: (gameId: string, playerName: string) => {},
 }
@@ -26,6 +29,7 @@ export const P2PContext = React.createContext(defaultContext)
 
 export class P2PContextProvider extends React.Component {
   state = {
+    connectionState: null,
     connected: false,
     playerName: null,
     clientId: null,
@@ -49,13 +53,22 @@ export class P2PContextProvider extends React.Component {
   async connect(identity, uniqueId) {
     debugger
     if (this.state.connected === true) return
-    const ably = new AblyClient(identity, uniqueId)
+    const ably = new AblyClient(
+      identity,
+      uniqueId,
+      (stateChange: Ably.Types.ConnectionStateChange) => {
+        this.setState({ connectionState: stateChange.current })
+      }
+    )
     await this.setState({ ably })
-
-    await this.state.ably.connect((message) => {
+    await this.state.ably.connect((message: Ably.Types.Message) => {
       this.state.p2pServer?.onReceiveMessage(message)
       this.state.p2pClient?.onReceiveMessage(message)
     })
+  }
+
+  disconnect() {
+    this.state.ably.disconnect()
   }
 
   async host(gameId: string, playerName: string) {
@@ -106,6 +119,7 @@ export class P2PContextProvider extends React.Component {
       clientId,
       currentTurnIndex,
       currentStage,
+      connectionState,
     } = this.state
 
     return (
@@ -120,6 +134,8 @@ export class P2PContextProvider extends React.Component {
           words,
           currentTurnIndex,
           currentStage,
+          connectionState,
+          disconnect: this.disconnect.bind(this),
           host: this.host.bind(this),
           join: this.join.bind(this),
         }}

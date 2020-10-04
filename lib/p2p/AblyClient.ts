@@ -1,5 +1,4 @@
 import * as Ably from 'ably'
-import { AblyStub } from './AblyStub'
 import { Identity } from './Identity'
 
 export class AblyClient {
@@ -11,16 +10,18 @@ export class AblyClient {
   }
   ably: Ably.Types.RealtimePromise
 
-  constructor(identity: Identity, uniqueId: string) {
+  constructor(
+    identity: Identity,
+    uniqueId: string,
+    onConnectionStateChange: (state: Ably.Types.ConnectionStateChange) => void
+  ) {
     this.channel = null
     this.metadata = { uniqueId: uniqueId, ...identity }
     // @ts-ignore
-    this.ably =
-      process.env.NODE_ENV === 'production'
-        ? new Ably.Realtime.Promise({
-            authUrl: '/api/createToken',
-          })
-        : new AblyStub()
+    this.ably = new Ably.Realtime.Promise({
+      authUrl: '/api/createToken',
+    })
+    this.ably.connection.on(onConnectionStateChange)
   }
 
   shouldHandleMessage(message) {
@@ -36,11 +37,15 @@ export class AblyClient {
       `only-one-${this.metadata.uniqueId}`
     )
     this.channel.subscribe((message) => {
-      console.log({ message })
       if (this.shouldHandleMessage(message)) {
         callback(message.data)
       }
     })
+  }
+
+  disconnect() {
+    this.channel.unsubscribe()
+    this.ably.close()
   }
 
   sendMessage(message, targetClientId?: string) {
