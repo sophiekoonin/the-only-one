@@ -21,9 +21,10 @@
 </template>
 
 <script>
-import { P2PClient, P2PServer } from './p2p'
-import { PubSubClient, handleMessageFromAbly } from './ably'
-import { Identity } from './identity'
+import { P2PClient } from './lib/p2p/p2pClient'
+import { P2PServer } from './lib/p2p/p2pServer'
+import { PubSubClient, handleMessageFromAbly } from './lib/p2p/ably'
+import { Identity } from './utils/identity'
 import CreateGameForm from './components/CreateGameForm'
 import GameInfo from './components/GameInfo'
 
