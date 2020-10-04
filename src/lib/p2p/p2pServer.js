@@ -12,6 +12,8 @@ export class P2PServer {
 
         this.state = {
             players: [],
+            currentTurnIndex: -1,
+            turnPlayer: null,
             hostIdentity: this.identity,
             started: false
         }
@@ -23,14 +25,24 @@ export class P2PServer {
 
     async startGame() {
         this.state.started = true
-
         this.ably.sendMessage({ kind: 'game-start', serverState: this.state })
         this.stateMachine.state.players = this.state.players
+        this.assignTurnPlayer()
         this.stateMachine.run()
+    }
+
+    assignTurnPlayer() {
+        this.state.currentTurnIndex = this.state.currentTurnIndex + 1
+        this.state.turnPlayer = this.state.players[this.state.currentTurnIndex]
+
+        this.stateMachine.state.currentTurnIndex = this.state.currentTurnIndex
+        this.stateMachine.state.turnPlayer = this.state.turnPlayer
     }
 
     async nextRound() {
         this.stateMachine.resetCurrentStepKeepingState()
+
+        this.assignTurnPlayer()
         this.stateMachine.run()
     }
 
