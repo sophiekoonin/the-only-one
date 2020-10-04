@@ -45,9 +45,7 @@ export class PlayerSubmitWordHandler {
     }
 
     async handleInput(state, context, message) {
-        console.log('handling input for PlayerSubmitWordHandler')
         if (!playerIsInActivePlayers(state, message.metadata)) {
-            console.log('player not in active players')
             return
         }
 

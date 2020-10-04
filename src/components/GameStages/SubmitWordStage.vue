@@ -1,7 +1,7 @@
 <script>
 export default {
     name: 'SubmitWordStage',
-    props: ['state', 'client', 'transmittedServerState'],
+    props: ['state', 'client', 'isTurnPlayer', 'transmittedServerState'],
 
     data: function() {
         return {
@@ -10,14 +10,12 @@ export default {
             clue: ''
         }
     },
-
     methods: {
         submitWord: async function() {
             this.submitted = true
             await this.client.submitWord(this.clue)
         }
     },
-
     created: function() {
         this.hasCountdown = !isNaN(this.state?.lastInstruction?.timeout)
         if (!this.hasCountdown) {
@@ -43,14 +41,21 @@ export default {
                 state.lastInstruction.type === 'submit-word-request'
         "
     >
-        <p>
-            The word is {{ state != null ? state.lastInstruction.value : '' }}
-        </p>
-        <label for="clue-input"
-            >Give a clue to help
-            {{ transmittedServerState.turnPlayer.friendlyName }} guess!</label
-        >
-        <input type="text" name="clue-input" v-model="clue" />
-        <button v-on:click="submitWord" type="submit">Submit</button>
+        <div v-if="isTurnPlayer">
+            Please wait
+        </div>
+        <div v-else>
+            <p>
+                The word is
+                {{ state != null ? state.lastInstruction.value : '' }}
+            </p>
+            <label for="clue-input"
+                >Give a clue to help
+                {{ transmittedServerState.turnPlayer.friendlyName }}
+                guess!</label
+            >
+            <input type="text" name="clue-input" v-model="clue" />
+            <button v-on:click="submitWord" type="submit">Submit</button>
+        </div>
     </section>
 </template>

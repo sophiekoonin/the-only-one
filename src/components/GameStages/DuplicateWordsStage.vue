@@ -1,7 +1,7 @@
 <script>
 export default {
     name: 'DuplicateWordsStage',
-    props: ['state', 'client', 'transmittedServerState'],
+    props: ['state', 'client', 'isTurnPlayer', 'transmittedServerState'],
 
     data: function() {
         return {
@@ -31,20 +31,25 @@ export default {
                 state.lastInstruction.type === 'show-duplicate-words'
         "
     >
-        <h3>
-            Submitted words
-        </h3>
-        <ul
-            v-if="state != null && state.lastInstruction.allClues != null"
-            class="clues"
-        >
-            <li
-                class="clue"
-                v-bind:key="clue.clientId"
-                v-for="clue in state.lastInstruction.allClues"
+        <div v-if="isTurnPlayer">
+            Please wait
+        </div>
+        <div v-else>
+            <h3>
+                Submitted words
+            </h3>
+            <ul
+                v-if="state != null && state.lastInstruction.allClues != null"
+                class="clues"
             >
-                <span>{{ clue.word }} from {{ clue.authorName }}</span>
-            </li>
-        </ul>
+                <li
+                    class="clue"
+                    v-bind:key="clue.clientId"
+                    v-for="clue in state.lastInstruction.allClues"
+                >
+                    <span>{{ clue.word }} from {{ clue.authorName }}</span>
+                </li>
+            </ul>
+        </div>
     </section>
 </template>

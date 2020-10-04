@@ -29,11 +29,14 @@
                 :state="clientState"
                 :transmittedServerState="transmittedServerState"
                 :client="client"
+                :isTurnPlayer="isTurnPlayer"
             />
             <duplicate-words-stage
                 :state="clientState"
                 :transmittedServerState="transmittedServerState"
                 :client="client"
+                :clientId="clientId"
+                :isTurnPlayer="isTurnPlayer"
             />
         </div>
     </div>
@@ -57,6 +60,13 @@ export default {
         'submit-word-stage': SubmitWordStage,
         'duplicate-words-stage': DuplicateWordsStage
     },
+    data: function() {
+        return {
+            isTurnPlayer:
+                this.clientId ===
+                this.transmittedServerState?.turnPlayer?.clientId
+        }
+    },
     props: [
         'gameId',
         'client',
@@ -65,7 +75,8 @@ export default {
         'isHost',
         'startGame',
         'gameStarted',
-        'gameCanBeStarted'
+        'gameCanBeStarted',
+        'clientId'
     ]
 }
 </script>

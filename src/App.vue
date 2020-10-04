@@ -16,6 +16,7 @@
             :client="gameClient"
             :gameCanBeStarted="gameCanBeStarted"
             :startGame="startGame"
+            :clientId="clientId"
         />
     </div>
 </template>
@@ -64,6 +65,9 @@ export default {
         },
         gameClient: function() {
             return this.p2pClient?.gameClient
+        },
+        clientId: function() {
+            return this.p2pClient?.identity?.clientId
         }
     },
     methods: {
