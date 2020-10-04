@@ -13,7 +13,8 @@
             </start-game-prompt>
         </div>
         <div v-if="!gameCanBeStarted && lastInstruction == null">
-        <loading-placeholder></loading-placeholder>
+            <loading-placeholder></loading-placeholder>
+        </div>
     </div>
 </template>
 
@@ -26,20 +27,19 @@ import ConnectedPlayersSummary from './ConnectedPlayersSummary'
 export default {
     name: 'GameLobby',
     components: {
-      'start-game-prompt': StartGamePrompt,
-      'loading-placeholder': LoadingPlaceholder,
-      'invite-link': InviteLink,
-      'connected-players-summary': ConnectedPlayersSummary
+        'start-game-prompt': StartGamePrompt,
+        'loading-placeholder': LoadingPlaceholder,
+        'invite-link': InviteLink,
+        'connected-players-summary': ConnectedPlayersSummary
     },
     props: [
-        'uniqueId',
+        'gameId',
         'transmittedServerState',
         'isHost',
         'startGame',
-        'advanceTurn',
         'gameStarted',
         'lastInstruction',
         'gameCanBeStarted'
-    ],
+    ]
 }
 </script>

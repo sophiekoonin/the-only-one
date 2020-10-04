@@ -4,12 +4,11 @@
             v-if="!joinedOrHosting"
             :host="host"
             :join="join"
-            :defaultUniqueId="uniqueId"
+            :defaultGameId="gameId"
             :defaultFriendlyName="friendlyName"
         />
         <game-lobby
             v-else
-            :uniqueId="uniqueId"
             :isHost="isHost"
             :gameId="gameId"
             :transmittedServerState="transmittedServerState"
@@ -38,7 +37,7 @@ export default {
         p2pClient: null,
         p2pServer: null,
         friendlyName: 'Player-' + crypto.getRandomValues(new Uint32Array(1))[0],
-        uniqueId: 'Session'
+        gameId: 'Session'
     }),
     computed: {
         state: function() {
@@ -69,9 +68,9 @@ export default {
         }
     },
     methods: {
-        host: async function(context) {
-            this.gameId = context.gameId
-            this.friendlyName = context.friendlyName
+        host: async function(friendlyName, gameId) {
+            this.gameId = gameId
+            this.friendlyName = friendlyName
 
             const pubSubClient = new PubSubClient((message, metadata) => {
                 handleMessageFromAbly(
@@ -89,9 +88,9 @@ export default {
             await this.p2pServer.connect()
             await this.p2pClient.connect()
         },
-        join: async function(context) {
-            this.gameId = context.gameId
-            this.friendlyName = context.friendlyName
+        join: async function(friendlyName, gameId) {
+            this.gameId = gameId
+            this.friendlyName = friendlyName
 
             const pubSubClient = new PubSubClient((message, metadata) => {
                 handleMessageFromAbly(

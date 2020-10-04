@@ -1,9 +1,9 @@
 import { Game } from '../game/GameDefinition'
 
 export class P2PClient {
-    constructor(identity, uniqueId, ably) {
+    constructor(identity, gameId, ably) {
         this.identity = identity
-        this.uniqueId = uniqueId
+        this.gameId = gameId
         this.ably = ably
 
         this.game = null
@@ -17,10 +17,10 @@ export class P2PClient {
     }
 
     async connect() {
-        await this.ably.connect(this.identity, this.uniqueId)
+        await this.ably.connect(this.identity, this.gameId)
         this.ably.sendMessage({ kind: 'connected' })
         this.state.status = 'awaiting-acknowledgement'
-        this.depictIt = new Game(this.uniqueId, this.ably)
+        this.depictIt = Game(this.gameId, this.ably)
     }
 
     onReceiveMessage(message) {

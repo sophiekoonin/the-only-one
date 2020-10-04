@@ -9,8 +9,7 @@
 
         <div v-if="!isHost">
             <span id="wait-message"
-                >Waiting for {{ state?.hostIdentity?.friendlyName }} to start
-                the game.</span
+                >Waiting for {{ friendlyName }} to start the game.</span
             >
         </div>
     </div>
@@ -20,6 +19,9 @@
 export default {
     name: 'StartGamePrompt',
     props: ['isHost', 'state'],
+    data: function() {
+        return { friendlyName: this.state?.hostIdentity?.friendlyName }
+    },
     methods: {
         emitStartGameEvent: async function() {
             this.$emit('startgame')

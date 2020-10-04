@@ -1,9 +1,9 @@
-import { GameStageMessages } from './gameStages'
+import { GameStageMessages } from './MessageTypes'
 import { StartHandler } from './handlers/StartHandler'
 import { NewRoundHandler } from './handlers/NewRoundHandler'
 import { PlayerGuessHandler } from './handlers/PlayerGuessHandler'
 import { EndHandler } from './handlers/EndHandler'
-import { CollateWordsHandler } from './handlers/NewRoundHandler'
+import { CollateWordsHandler } from './handlers/CollateWordsHandler'
 import { PlayerSubmitWordHandler } from './handlers/PlayerSubmitWordHandler'
 
 const { GameStateMachine } = require('./GameStateMachine')

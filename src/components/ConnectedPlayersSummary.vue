@@ -1,6 +1,5 @@
 <template>
     <section class="game-info">
-        <h2>UniqueId: {{ uniqueId }}</h2>
         <h3>
             Active players:
             {{
@@ -30,6 +29,6 @@
 <script>
 export default {
     name: 'ConnectedPlayersSummary',
-    props: ['uniqueId', 'transmittedServerState']
+    props: ['transmittedServerState']
 }
 </script>

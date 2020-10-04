@@ -1,7 +1,7 @@
 <template>
     <form class="form">
         <label for="session-name">Enter a name for your session</label>
-        <input type="text" name="session-name" v-model="uniqueId" />
+        <input type="text" name="session-name" v-model="gameId" />
         <label for="name-name">Enter your name</label>
         <input type="text" name="name" v-model="friendlyName" />
         <button v-on:click="startHosting" class="form-button form-button--host">
@@ -16,21 +16,21 @@
 <script>
 export default {
     name: 'CreateGameForm',
-    props: ['host', 'join', 'defaultFriendlyName', 'defaultUniqueId'],
+    props: ['host', 'join', 'defaultFriendlyName', 'defaultGameId'],
     data: function() {
         return {
             friendlyName: this.defaultFriendlyName,
-            uniqueId: this.defaultUniqueId
+            gameId: this.defaultGameId
         }
     },
     methods: {
         startHosting: async function(evt) {
             evt.preventDefault()
-            this.host(this.friendlyName, this.uniqueId)
+            this.host(this.friendlyName, this.gameId)
         },
         joinGame: async function(evt) {
             evt.preventDefault()
-            this.join(this.friendlyName, this.uniqueId)
+            this.join(this.friendlyName, this.gameId)
         }
     }
 }

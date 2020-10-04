@@ -1,9 +1,9 @@
-import { Game } from '../game/GameDefinition.js'
+import { Game } from '../game/GameDefinition'
 
 export class P2PServer {
-    constructor(identity, uniqueId, ably) {
+    constructor(identity, gameId, ably) {
         this.identity = identity
-        this.uniqueId = uniqueId
+        this.gameId = gameId
         this.ably = ably
 
         this.stateMachine = Game({
@@ -18,7 +18,7 @@ export class P2PServer {
     }
 
     async connect() {
-        await this.ably.connect(this.identity, this.uniqueId)
+        await this.ably.connect(this.identity, this.gameId)
     }
 
     async startGame() {

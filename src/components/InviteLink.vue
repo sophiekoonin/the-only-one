@@ -2,6 +2,11 @@
 export default {
     name: 'InviteLink',
     props: ['gameId'],
+    data: function() {
+        return {
+            gameIdString: this.gameId
+        }
+    },
     methods: {
         copyLink: async function() {
             navigator.clipboard.writeText(this.inviteLink)
@@ -10,7 +15,7 @@ export default {
     computed: {
         inviteLink: function() {
             const { protocol, host } = window.location
-            return `${protocol}//${host}/?gameId=${this.gameId}&join=true`
+            return `${protocol}//${host}/?gameId=${this.gameIdString}&join=true`
         }
     }
 }
@@ -21,7 +26,7 @@ export default {
         <p>Share this link to invite people to play:</p>
         <div>
             <span id="copyLinkInputBox" class="copy-link-text">{{
-                value
+                gameId
             }}</span>
             <input
                 type="button"

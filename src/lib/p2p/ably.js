@@ -21,15 +21,15 @@ export class PubSubClient {
         this.onMessageReceivedCallback = onMessageReceivedCallback
     }
 
-    async connect(identity, uniqueId) {
+    async connect(identity, gameId) {
         if (this.connected) return
 
-        this.metadata = { uniqueId: uniqueId, ...identity }
+        this.metadata = { gameId: gameId, ...identity }
 
         const ably = new Ably.Realtime.Promise({
             authUrl: '/api/createToken'
         })
-        this.channel = await ably.channels.get(`only-one-${uniqueId}`, {
+        this.channel = await ably.channels.get(`only-one-${gameId}`, {
             params: { rewind: '1m' }
         })
 
