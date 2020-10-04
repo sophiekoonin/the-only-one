@@ -65,6 +65,7 @@ export class GameStateMachine {
 
     async handleInput(input) {
         const currentStep = this.currentStep()
+        console.log({ currentStep })
         if (currentStep.handleInput) {
             currentStep.handleInput(this.state, this.context, input)
         } else {

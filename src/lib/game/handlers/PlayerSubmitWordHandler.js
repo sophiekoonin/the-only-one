@@ -45,15 +45,16 @@ export class PlayerSubmitWordHandler {
     }
 
     async handleInput(state, context, message) {
-        console.log({ state })
+        console.log('handling input for PlayerSubmitWordHandler')
         if (!playerIsInActivePlayers(state, message.metadata)) {
+            console.log('player not in active players')
             return
         }
 
         if (message.kind === GameStageMessageTypes.SUBMIT_WORD_RESPONSE) {
             state.clues.push({
                 id: createId(),
-                word: message.metadata.word,
+                word: message.word,
                 author: message.metadata.clientId,
                 authorName: message.metadata.friendlyName
             })
@@ -62,7 +63,7 @@ export class PlayerSubmitWordHandler {
                 message.metadata.clientId
             )
 
-            this.submitted++
+            this.submitted = this.submitted + 1
         }
     }
 }

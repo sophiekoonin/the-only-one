@@ -12,9 +12,9 @@ export default {
     },
 
     methods: {
-        submitWord: async function(word) {
+        submitWord: async function() {
             this.submitted = true
-            await this.client.submitWord(word)
+            await this.client.submitWord(this.clue)
         }
     },
 
@@ -51,5 +51,6 @@ export default {
             {{ transmittedServerState.turnPlayer.friendlyName }} guess!</label
         >
         <input type="text" name="clue-input" v-model="clue" />
+        <button v-on:click="submitWord" type="submit">Submit</button>
     </section>
 </template>

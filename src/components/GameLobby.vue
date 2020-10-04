@@ -30,6 +30,11 @@
                 :transmittedServerState="transmittedServerState"
                 :client="client"
             />
+            <duplicate-words-stage
+                :state="clientState"
+                :transmittedServerState="transmittedServerState"
+                :client="client"
+            />
         </div>
     </div>
 </template>
@@ -39,6 +44,7 @@ import StartGamePrompt from './StartGamePrompt'
 import LoadingPlaceholder from './LoadingPlaceholder'
 import InviteLink from './InviteLink'
 import SubmitWordStage from './GameStages/SubmitWordStage'
+import DuplicateWordsStage from './GameStages/DuplicateWordsStage'
 import ConnectedPlayersSummary from './ConnectedPlayersSummary'
 
 export default {
@@ -48,7 +54,8 @@ export default {
         'loading-placeholder': LoadingPlaceholder,
         'invite-link': InviteLink,
         'connected-players-summary': ConnectedPlayersSummary,
-        'submit-word-stage': SubmitWordStage
+        'submit-word-stage': SubmitWordStage,
+        'duplicate-words-stage': DuplicateWordsStage
     },
     props: [
         'gameId',

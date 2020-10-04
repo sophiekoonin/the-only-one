@@ -11,6 +11,7 @@ export class CollateWordsHandler {
                 {
                     kind: 'instruction',
                     type: GameStageMessageTypes.SHOW_DUPLICATE_WORDS,
+                    allClues: state.clues,
                     dupes,
                     uniques
                 },
