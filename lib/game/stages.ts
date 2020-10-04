@@ -1,3 +1,4 @@
+import CompareWordsStage from '../../components/CompareWordsStage/CompareWordsStage'
 import JoinStage from '../../components/JoinStage/JoinStage'
 import PlaceholderRenderer from '../../components/PlaceholderRenderer'
 import SubmitWordStage from '../../components/SubmitWordStage/SubmitWordStage'
@@ -23,7 +24,7 @@ export const GameStages = Object.freeze({
   },
   [GameStageIds.COMPARE_WORDS]: {
     nextStage: GameStageIds.PLAYER_GUESS,
-    Renderer: PlaceholderRenderer,
+    Renderer: CompareWordsStage,
   },
   [GameStageIds.PLAYER_GUESS]: {
     nextStage: GameStageIds.END_TURN,

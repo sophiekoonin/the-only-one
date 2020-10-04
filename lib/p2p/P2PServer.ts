@@ -87,7 +87,7 @@ export class P2PServer {
         // once everyone except current turn player has submitted words
         // we move on to next stage
         if (this.state.playerWords.length === this.state.players.length - 1) {
-          this.advanceTurn()
+          this.advanceStage()
         }
         break
       default:
