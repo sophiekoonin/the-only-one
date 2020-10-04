@@ -1,5 +1,6 @@
 <script>
-export const InviteLink = {
+export default {
+    name: 'InviteLink',
     props: ['gameId'],
     methods: {
         copyLink: async function() {

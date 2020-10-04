@@ -5,21 +5,32 @@
             <connected-players-summary
                 :state="transmittedServerState"
             ></connected-players-summary>
-            <ready-or-waiting-prompt
+            <start-game-prompt
                 :is-host="isHost"
                 :state="transmittedServerState"
                 v-on:startgame="startGame"
             >
-            </ready-or-waiting-prompt>
+            </start-game-prompt>
         </div>
         <div v-if="!gameCanBeStarted && lastInstruction == null">
-        <loader></loader>
+        <loading-placeholder></loading-placeholder>
     </div>
 </template>
 
 <script>
+import StartGamePrompt from './StartGamePrompt'
+import LoadingPlaceholder from './LoadingPlaceholder'
+import InviteLink from './InviteLink'
+import ConnectedPlayersSummary from './ConnectedPlayersSummary'
+
 export default {
     name: 'GameLobby',
+    components: {
+      'start-game-prompt': StartGamePrompt,
+      'loading-placeholder': LoadingPlaceholder,
+      'invite-link': InviteLink,
+      'connected-players-summary': ConnectedPlayersSummary
+    },
     props: [
         'uniqueId',
         'transmittedServerState',
@@ -29,6 +40,6 @@ export default {
         'gameStarted',
         'lastInstruction',
         'gameCanBeStarted'
-    ]
+    ],
 }
 </script>
