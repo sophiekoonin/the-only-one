@@ -4,7 +4,7 @@ export class NewRoundHandler {
         state.currentTurnIndex = state.currentTurnIndex++
 
         state.turnPlayer = state.activePlayers[state.currentTurnIndex]
-        state.guessingPlayers = state.players.filter(
+        state.nonTurnPlayers = state.players.filter(
             player => player.clientId != state.turnPlayer?.clientId
         )
 

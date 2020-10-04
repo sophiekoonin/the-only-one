@@ -18,23 +18,23 @@ export class PlayerSubmitWordHandler {
     async execute(state, context) {
         this.submitted = 0
 
-        for (let player of state.guessingPlayers) {
+        state.nonTurnPlayers.forEach(player =>
             context.channel.sendMessage(
                 {
                     kind: 'instruction',
-                    type: 'submit-word-request',
+                    type: GameStageMessages.SUBMIT_WORD_REQUEST,
                     value: state.currentWord,
                     timeout: this.userTimeoutPromptAt
                 },
                 player.clientId
             )
-        }
+        )
 
         const result = { transitionTo: 'CollatePlayerWordsHandler' }
 
         try {
             await waitUntil(
-                () => this.submitted == state.guessingPlayers,
+                () => this.submitted === state.nonTurnPlayers.length,
                 this.waitForUsersFor
             )
         } catch (exception) {
