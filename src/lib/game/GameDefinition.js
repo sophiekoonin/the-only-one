@@ -1,6 +1,9 @@
 import { GameStageMessages } from './gameStages'
 import { StartHandler } from './handlers/StartHandler'
 import { NewRoundHandler } from './handlers/NewRoundHandler'
+import { PlayerGuessHandler } from './handlers/PlayerGuessHandler'
+import { EndHandler } from './handlers/EndHandler'
+import { CollateWordsHandler } from './handlers/NewRoundHandler'
 import { PlayerSubmitWordHandler } from './handlers/PlayerSubmitWordHandler'
 
 const { GameStateMachine } = require('./GameStateMachine')
@@ -8,10 +11,12 @@ const { GameStateMachine } = require('./GameStateMachine')
 export const Game = handlerContext =>
     new GameStateMachine({
         steps: {
-            StartHandler,
-            NewRoundHandler,
-            PlayerSubmitWordHandler,
-            EndHandler: {}
+            StartHandler: new StartHandler(),
+            NewRoundHandler: new NewRoundHandler(),
+            PlayerSubmitWordHandler: new PlayerSubmitWordHandler(30_000),
+            CollateWordsHandler: new CollateWordsHandler(),
+            PlayerGuessHandler: new PlayerGuessHandler(30_000),
+            EndHandler: new EndHandler()
         },
         context: handlerContext
     })
