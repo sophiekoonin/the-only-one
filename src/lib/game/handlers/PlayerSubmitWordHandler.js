@@ -1,4 +1,4 @@
-import { GameStageMessages } from '../gameStages'
+import { GameStageMessages } from '../MessageTypes'
 import {
     createId,
     playerIsInActivePlayers,

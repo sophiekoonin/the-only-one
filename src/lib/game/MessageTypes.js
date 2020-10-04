@@ -1,4 +1,4 @@
-export const GameStageMessages = Object.freeze({
+export const GameStageMessageTypes = Object.freeze({
     // players see the word, and submit their clue
     SUBMIT_WORD_REQUEST: 'submit-word-request',
     SUBMIT_WORD_RESPONSE: 'submit-word-response',

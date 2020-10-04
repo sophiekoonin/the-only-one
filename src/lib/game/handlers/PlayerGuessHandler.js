@@ -1,4 +1,4 @@
-import { GameStageMessages } from '../gameStages'
+import { GameStageMessages } from '../MessageTypes'
 import { waitUntil } from '../GameStateMachine'
 
 export class PlayerGuessHandler {
@@ -33,7 +33,7 @@ export class PlayerGuessHandler {
             )
         })
 
-        const result = { transitionTo: 'ShowResultHandler' }
+        const result = { transitionTo: 'EndHandler' }
 
         try {
             await waitUntil(
@@ -43,5 +43,22 @@ export class PlayerGuessHandler {
         } catch (exception) {
             result.error = true
         }
+
+        return result
     }
+
+    async handleInput(state, context, message) {
+        if (!playerIsTurnPlayer(state, message.metadata)) {
+            return
+        }
+
+        if (message.kind === GameStageMessages.PLAYER_GUESS_RESPONSE) {
+            state.guess = message.metadata.guess
+            this.playerHasGuessed = true
+        }
+    }
+}
+
+function playerIsTurnPlayer(state, playerIdentity) {
+    return state.turnPlayer.clientId === playerIdentity.clientId
 }

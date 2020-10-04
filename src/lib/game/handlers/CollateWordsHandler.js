@@ -1,4 +1,4 @@
-import { GameStageMessages } from '../gameStages'
+import { GameStageMessages } from '../MessageTypes'
 
 export class CollateWordsHandler {
     async execute(state, context) {
