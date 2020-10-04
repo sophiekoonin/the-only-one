@@ -7,15 +7,15 @@
             :defaultUniqueId="uniqueId"
             :defaultFriendlyName="friendlyName"
         />
-        <game-info
+        <game-lobby
             v-else
             :uniqueId="uniqueId"
-            :iAmHost="iAmHost"
+            :isHost="isHost"
+            :gameId="gameId"
             :transmittedServerState="transmittedServerState"
-            :advanceTurn="advanceTurn"
-            :gameStarted="gameStarted"
+            :gameCanBeStarted="gameCanBeStarted"
             :startGame="startGame"
-            :currentTurn="currentTurn"
+            :lastInstruction="state.lastInstruction"
         />
     </div>
 </template>
@@ -26,13 +26,13 @@ import { P2PServer } from './lib/p2p/p2pServer'
 import { PubSubClient, handleMessageFromAbly } from './lib/p2p/ably'
 import { Identity } from './utils/identity'
 import CreateGameForm from './components/CreateGameForm'
-import GameInfo from './components/GameInfo'
+import GameLobby from './components/GameLobby'
 
 export default {
     name: 'App',
     components: {
         'create-game-form': CreateGameForm,
-        'game-info': GameInfo
+        'game-lobby': GameLobby
     },
     data: () => ({
         p2pClient: null,
@@ -50,7 +50,7 @@ export default {
         joinedOrHosting: function() {
             return this.p2pClient != null || this.p2pServer != null
         },
-        iAmHost: function() {
+        isHost: function() {
             return this.p2pServer != null
         },
         currentTurn: function() {
@@ -60,18 +60,19 @@ export default {
         },
         gameStarted: function() {
             return this.p2pClient != null && this.p2pClient.state.gameStarted
+        },
+        gameCanBeStarted: function() {
+            return (
+                this.transmittedServerState &&
+                !this.transmittedServerState.started
+            )
         }
     },
     methods: {
-        setFriendlyName: function(evt) {
-            this.friendlyName = evt.target.value
-        },
-        setUniqueId: function(evt) {
-            this.uniqueId = evt.target.value
-        },
-        host: async function(friendlyName, uniqueId) {
-            this.friendlyName = friendlyName
-            this.uniqueId = uniqueId
+        host: async function(context) {
+            this.gameId = context.gameId
+            this.friendlyName = context.friendlyName
+
             const pubSubClient = new PubSubClient((message, metadata) => {
                 handleMessageFromAbly(
                     message,
@@ -81,16 +82,17 @@ export default {
                 )
             })
 
-            const identity = new Identity(friendlyName)
-            this.p2pServer = new P2PServer(identity, uniqueId, pubSubClient)
-            this.p2pClient = new P2PClient(identity, uniqueId, pubSubClient)
+            const identity = new Identity(this.friendlyName)
+            this.p2pServer = new P2PServer(identity, this.gameId, pubSubClient)
+            this.p2pClient = new P2PClient(identity, this.gameId, pubSubClient)
 
             await this.p2pServer.connect()
             await this.p2pClient.connect()
         },
-        join: async function(friendlyName, uniqueId) {
-            this.friendlyName = friendlyName
-            this.uniqueId = uniqueId
+        join: async function(context) {
+            this.gameId = context.gameId
+            this.friendlyName = context.friendlyName
+
             const pubSubClient = new PubSubClient((message, metadata) => {
                 handleMessageFromAbly(
                     message,
@@ -100,18 +102,18 @@ export default {
                 )
             })
 
-            const identity = new Identity(friendlyName)
-            this.p2pClient = new P2PClient(identity, uniqueId, pubSubClient)
+            const identity = new Identity(this.friendlyName)
+            this.p2pClient = new P2PClient(identity, this.gameId, pubSubClient)
 
             await this.p2pClient.connect()
         },
-        advanceTurn: async function(evt) {
-            evt.preventDefault()
-            await this.p2pServer.advanceTurn()
-        },
         startGame: async function(evt) {
             evt.preventDefault()
-            await this.p2pServer.startGame()
+            this.p2pServer?.startGame()
+        },
+        nextRound: async function(evt) {
+            evt.preventDefault()
+            this.p2pServer?.nextRound()
         }
     }
 }
