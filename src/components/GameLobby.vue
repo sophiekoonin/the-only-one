@@ -27,7 +27,8 @@ export default {
         'startGame',
         'advanceTurn',
         'gameStarted',
-        'lastInstruction'
+        'lastInstruction',
+        'gameCanBeStarted'
     ]
 }
 </script>
