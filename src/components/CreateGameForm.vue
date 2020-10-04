@@ -23,6 +23,11 @@ export default {
             gameId: this.defaultGameId
         }
     },
+    created: function() {
+        const uri = window.location.search.substring(1)
+        const params = new URLSearchParams(uri)
+        this.gameId = params.get('gameId')
+    },
     methods: {
         startHosting: async function(evt) {
             evt.preventDefault()
