@@ -26,7 +26,7 @@ export default {
         <p>Share this link to invite people to play:</p>
         <div>
             <span id="copyLinkInputBox" class="copy-link-text">{{
-                gameId
+                gameIdString
             }}</span>
             <input
                 type="button"

@@ -1,4 +1,4 @@
-import { GameStageMessages } from './MessageTypes'
+import { GameStageMessageTypes } from './MessageTypes'
 import { StartHandler } from './handlers/StartHandler'
 import { NewRoundHandler } from './handlers/NewRoundHandler'
 import { PlayerGuessHandler } from './handlers/PlayerGuessHandler'
@@ -29,14 +29,14 @@ export class GameClient {
 
     async submitWord(word) {
         this.channel.sendMessage({
-            kind: GameStageMessages.SUBMIT_WORD_RESPONSE,
+            kind: GameStageMessageTypes.SUBMIT_WORD_RESPONSE,
             word
         })
     }
 
     async submitGuess(word) {
         this.channel.sendMessage({
-            kind: GameStageMessages.SUBMIT_GUESS_RESPONSE,
+            kind: GameStageMessageTypes.SUBMIT_GUESS_RESPONSE,
             word
         })
     }

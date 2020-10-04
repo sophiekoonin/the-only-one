@@ -11,7 +11,8 @@
             v-else
             :isHost="isHost"
             :gameId="gameId"
-            :transmittedServerState="transmittedServerState"
+            :state="transmittedServerState"
+            :client="gameClient"
             :gameCanBeStarted="gameCanBeStarted"
             :startGame="startGame"
             :lastInstruction="state.lastInstruction"
@@ -41,10 +42,10 @@ export default {
     }),
     computed: {
         state: function() {
-            return this.p2pClient != null ? this.p2pClient.state : null
+            return this.p2pClient?.state
         },
         transmittedServerState: function() {
-            return this.p2pClient != null ? this.p2pClient.serverState : null
+            return this.p2pClient?.serverState
         },
         joinedOrHosting: function() {
             return this.p2pClient != null || this.p2pServer != null
@@ -52,19 +53,17 @@ export default {
         isHost: function() {
             return this.p2pServer != null
         },
-        currentTurn: function() {
-            return this.p2pClient != null
-                ? this.p2pClient.state.currentTurn.friendlyName
-                : ''
-        },
         gameStarted: function() {
-            return this.p2pClient != null && this.p2pClient.state.gameStarted
+            return this.p2pClient?.state?.gameStarted
         },
         gameCanBeStarted: function() {
             return (
                 this.transmittedServerState &&
                 !this.transmittedServerState.started
             )
+        },
+        gameClient: function() {
+            return this.p2pClient?.gameClient
         }
     },
     methods: {
@@ -106,12 +105,10 @@ export default {
 
             await this.p2pClient.connect()
         },
-        startGame: async function(evt) {
-            evt.preventDefault()
+        startGame: async function() {
             this.p2pServer?.startGame()
         },
-        nextRound: async function(evt) {
-            evt.preventDefault()
+        nextRound: async function() {
             this.p2pServer?.nextRound()
         }
     }

@@ -1,4 +1,4 @@
-import { GameStageMessages } from '../MessageTypes'
+import { GameStageMessageTypes } from '../MessageTypes'
 import {
     createId,
     playerIsInActivePlayers,
@@ -22,7 +22,7 @@ export class PlayerSubmitWordHandler {
             context.channel.sendMessage(
                 {
                     kind: 'instruction',
-                    type: GameStageMessages.SUBMIT_WORD_REQUEST,
+                    type: GameStageMessageTypes.SUBMIT_WORD_REQUEST,
                     value: state.currentWord,
                     timeout: this.userTimeoutPromptAt
                 },
@@ -30,7 +30,7 @@ export class PlayerSubmitWordHandler {
             )
         )
 
-        const result = { transitionTo: 'CollatePlayerWordsHandler' }
+        const result = { transitionTo: 'CollateWordsHandler' }
 
         try {
             await waitUntil(
@@ -45,11 +45,12 @@ export class PlayerSubmitWordHandler {
     }
 
     async handleInput(state, context, message) {
+        console.log({ state })
         if (!playerIsInActivePlayers(state, message.metadata)) {
             return
         }
 
-        if (message.kind === GameStageMessages.SUBMIT_WORD_RESPONSE) {
+        if (message.kind === GameStageMessageTypes.SUBMIT_WORD_RESPONSE) {
             state.clues.push({
                 id: createId(),
                 word: message.metadata.word,

@@ -1,4 +1,4 @@
-import { GameStageMessages } from '../MessageTypes'
+import { GameStageMessageTypes } from '../MessageTypes'
 import { waitUntil } from '../GameStateMachine'
 
 export class PlayerGuessHandler {
@@ -15,7 +15,7 @@ export class PlayerGuessHandler {
         context.channel.sendMessage(
             {
                 kind: 'instruction',
-                type: GameStageMessages.PLAYER_GUESS_REQUEST,
+                type: GameStageMessageTypes.PLAYER_GUESS_REQUEST,
                 clues: state.clues,
                 timeout: this.userTimeoutPromptAt
             },
@@ -26,7 +26,7 @@ export class PlayerGuessHandler {
             context.channel.sendMessage(
                 {
                     kind: 'instruction',
-                    type: GameStageMessages.PLAYER_IS_GUESSING,
+                    type: GameStageMessageTypes.PLAYER_IS_GUESSING,
                     clues: state.clues
                 },
                 player.clientId
@@ -52,7 +52,7 @@ export class PlayerGuessHandler {
             return
         }
 
-        if (message.kind === GameStageMessages.PLAYER_GUESS_RESPONSE) {
+        if (message.kind === GameStageMessageTypes.PLAYER_GUESS_RESPONSE) {
             state.guess = message.metadata.guess
             this.playerHasGuessed = true
         }

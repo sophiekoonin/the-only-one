@@ -1,4 +1,4 @@
-import { GameStageMessages } from '../MessageTypes'
+import { GameStageMessageTypes } from '../MessageTypes'
 
 export class CollateWordsHandler {
     async execute(state, context) {
@@ -10,7 +10,7 @@ export class CollateWordsHandler {
             context.channel.sendMessage(
                 {
                     kind: 'instruction',
-                    type: GameStageMessages.SHOW_DUPLICATE_WORDS,
+                    type: GameStageMessageTypes.SHOW_DUPLICATE_WORDS,
                     dupes,
                     uniques
                 },

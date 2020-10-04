@@ -20,7 +20,10 @@ export class GameStateMachine {
         this.state = {
             words: [],
             msInCurrentStep: 0,
-            currentTurnIndex: -1
+            currentTurnIndex: -1,
+            activePlayers: [],
+            nonTurnPlayers: [],
+            turnPlayer: null
         }
 
         this.startNewRound()

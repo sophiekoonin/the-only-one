@@ -19,7 +19,7 @@ export default {
     },
 
     created: function() {
-        this.hasCountdown = !isNaN(this.state?.lastInstruction?.timeout)
+        this.hasCountdown = !isNaN(this.lastInstruction?.timeout)
         if (!this.hasCountdown) {
             return
         }
@@ -28,7 +28,7 @@ export default {
             if (!this.submitted) {
                 this.submitWord(this.clue)
             }
-        }, this.state?.lastInstruction?.timeout)
+        }, this.lastInstruction?.timeout)
     },
 
     unmounted: function() {
@@ -39,11 +39,11 @@ export default {
 <template>
     <section
         v-if="
-            state.lastInstruction != null &&
-                state.lastInstruction.type === 'submit-word-request'
+            lastInstruction != null &&
+                lastInstruction.type === 'submit-word-request'
         "
     >
-        <p>The word is {{ state.lastInstruction.value }}</p>
+        <p>The word is {{ lastInstruction.value }}</p>
         <label for="clue-input"
             >Give a clue to help
             {{ state.turnPlayer.friendlyName }} guess!</label

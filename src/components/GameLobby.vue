@@ -3,17 +3,20 @@
         <div class="game-lobby" v-if="gameCanBeStarted">
             <invite-link :game-id="gameId"></invite-link>
             <connected-players-summary
-                :state="transmittedServerState"
+                :state="state"
             ></connected-players-summary>
             <start-game-prompt
                 :is-host="isHost"
-                :state="transmittedServerState"
+                :state="state"
                 v-on:startgame="startGame"
             >
             </start-game-prompt>
         </div>
         <div v-if="!gameCanBeStarted && lastInstruction == null">
             <loading-placeholder></loading-placeholder>
+        </div>
+        <div v-if="lastInstruction != null" class="playfield">
+            <submit-word-stage :state="state" :client="client" />
         </div>
     </div>
 </template>
@@ -22,6 +25,7 @@
 import StartGamePrompt from './StartGamePrompt'
 import LoadingPlaceholder from './LoadingPlaceholder'
 import InviteLink from './InviteLink'
+import SubmitWordStage from './GameStages/SubmitWordStage'
 import ConnectedPlayersSummary from './ConnectedPlayersSummary'
 
 export default {
@@ -30,11 +34,12 @@ export default {
         'start-game-prompt': StartGamePrompt,
         'loading-placeholder': LoadingPlaceholder,
         'invite-link': InviteLink,
-        'connected-players-summary': ConnectedPlayersSummary
+        'connected-players-summary': ConnectedPlayersSummary,
+        'submit-word-stage': SubmitWordStage
     },
     props: [
         'gameId',
-        'transmittedServerState',
+        'state',
         'isHost',
         'startGame',
         'gameStarted',
