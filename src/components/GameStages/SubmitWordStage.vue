@@ -1,7 +1,7 @@
 <script>
 export default {
     name: 'SubmitWordStage',
-    props: ['state', 'client', 'isTurnPlayer', 'transmittedServerState'],
+    props: ['state', 'client', 'isCluePlayer', 'transmittedServerState'],
 
     data: function() {
         return {
@@ -41,10 +41,7 @@ export default {
                 state.lastInstruction.type === 'submit-word-request'
         "
     >
-        <div v-if="isTurnPlayer">
-            Please wait
-        </div>
-        <div v-else>
+        <div v-if="isCluePlayer">
             <p>
                 The word is
                 {{ state != null ? state.lastInstruction.value : '' }}
@@ -56,6 +53,9 @@ export default {
             >
             <input type="text" name="clue-input" v-model="clue" />
             <button v-on:click="submitWord" type="submit">Submit</button>
+        </div>
+        <div v-else>
+            Please wait
         </div>
     </section>
 </template>

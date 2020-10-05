@@ -17,6 +17,7 @@
             :gameCanBeStarted="gameCanBeStarted"
             :startGame="startGame"
             :clientId="clientId"
+            :isCluePlayer="isCluePlayer"
         />
     </div>
 </template>
@@ -25,7 +26,7 @@
 import { P2PClient } from './lib/p2p/p2pClient'
 import { P2PServer } from './lib/p2p/p2pServer'
 import { PubSubClient, handleMessageFromAbly } from './lib/p2p/ably'
-import { Identity } from './utils/identity'
+import { Identity } from './lib/utils/identity'
 import CreateGameForm from './components/CreateGameForm'
 import GameLobby from './components/GameLobby'
 
@@ -68,6 +69,17 @@ export default {
         },
         clientId: function() {
             return this.p2pClient?.identity?.clientId
+        },
+        turnPlayer: function() {
+            return this.transmittedServerState?.turnPlayer
+        },
+        isCluePlayer: function() {
+            const turnPlayer = this.turnPlayer?.clientId
+            return (
+                turnPlayer != null &&
+                this.clientId != null &&
+                turnPlayer !== this.clientId
+            )
         }
     },
     methods: {
