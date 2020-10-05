@@ -12,11 +12,11 @@
         <div class="game-lobby" v-if="gameCanBeStarted">
             <invite-link :game-id="gameId"></invite-link>
             <connected-players-summary
-                :state="transmittedServerState"
+                :state="serverState"
             ></connected-players-summary>
             <start-game-prompt
                 :is-host="isHost"
-                :state="transmittedServerState"
+                :state="serverState"
                 v-on:startgame="startGame"
             >
             </start-game-prompt>
@@ -36,27 +36,27 @@
         >
             <submit-word-stage
                 :state="clientState"
-                :transmittedServerState="transmittedServerState"
+                :transmittedServerState="serverState"
                 :client="client"
                 :isCluePlayer="isCluePlayer"
             />
             <duplicate-words-stage
                 :state="clientState"
-                :transmittedServerState="transmittedServerState"
+                :transmittedServerState="serverState"
                 :client="client"
                 :clientId="clientId"
                 :isCluePlayer="isCluePlayer"
             />
             <player-guess-stage
                 :state="clientState"
-                :transmittedServerState="transmittedServerState"
+                :transmittedServerState="serverState"
                 :client="client"
                 :clientId="clientId"
                 :isCluePlayer="isCluePlayer"
             />
             <round-end-stage
                 :state="clientState"
-                :transmittedServerState="transmittedServerState"
+                :transmittedServerState="serverState"
                 :client="client"
                 :clientId="clientId"
                 :isCluePlayer="isCluePlayer"
@@ -66,14 +66,14 @@
 </template>
 
 <script>
-import StartGamePrompt from './StartGamePrompt'
-import LoadingPlaceholder from './LoadingPlaceholder'
-import InviteLink from './InviteLink'
-import SubmitWordStage from './GameStages/SubmitWordStage'
-import DuplicateWordsStage from './GameStages/DuplicateWordsStage'
-import ConnectedPlayersSummary from './ConnectedPlayersSummary'
-import PlayerGuessStage from './GameStages/PlayerGuessStage'
-import RoundEndStage from './GameStages/RoundEndStage'
+import StartGamePrompt from '../components/StartGamePrompt'
+import LoadingPlaceholder from '../components/LoadingPlaceholder'
+import InviteLink from '../components/InviteLink'
+import SubmitWordStage from '../components/GameStages/SubmitWordStage'
+import DuplicateWordsStage from '../components/GameStages/DuplicateWordsStage'
+import ConnectedPlayersSummary from '../components/ConnectedPlayersSummary'
+import PlayerGuessStage from '../components/GameStages/PlayerGuessStage'
+import RoundEndStage from '../components/GameStages/RoundEndStage'
 import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
 
 export default {

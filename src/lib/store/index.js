@@ -50,6 +50,7 @@ export default new Vuex.Store({
     },
     actions: {
         async host({ commit, state }, gameData) {
+            console.log({ gameData })
             const { gameId, friendlyName } = gameData
             commit('setFriendlyName', friendlyName)
             commit('setGameId', gameId)
@@ -57,14 +58,14 @@ export default new Vuex.Store({
                 handleMessageFromAbly(
                     message,
                     metadata,
-                    this.p2pClient,
-                    this.p2pServer
+                    state.p2pClient,
+                    state.p2pServer
                 )
             })
 
-            const identity = new Identity(this.friendlyName)
-            const p2pServer = new P2PServer(identity, this.gameId, pubSubClient)
-            const p2pClient = new P2PClient(identity, this.gameId, pubSubClient)
+            const identity = new Identity(friendlyName)
+            const p2pServer = new P2PServer(identity, gameId, pubSubClient)
+            const p2pClient = new P2PClient(identity, gameId, pubSubClient)
             commit('setP2pServer', p2pServer)
             commit('setP2pClient', p2pClient)
             await state.p2pServer.connect()
@@ -78,12 +79,12 @@ export default new Vuex.Store({
                 handleMessageFromAbly(
                     message,
                     metadata,
-                    this.p2pClient,
-                    this.p2pServer
+                    state.p2pClient,
+                    state.p2pServer
                 )
             })
-            const identity = new Identity(this.friendlyName)
-            const p2pClient = new P2PClient(identity, this.gameId, pubSubClient)
+            const identity = new Identity(friendlyName)
+            const p2pClient = new P2PClient(identity, gameId, pubSubClient)
             commit('setP2pClient', p2pClient)
             await state.p2pClient.connect()
         },
