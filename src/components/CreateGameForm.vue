@@ -1,7 +1,5 @@
 <template>
     <form class="form">
-        <label for="session-name">Enter a name for your session</label>
-        <input type="text" name="session-name" v-model="gameId" />
         <label for="name-name">Enter your name</label>
         <input type="text" name="name" v-model="friendlyName" />
         <button v-on:click="startHosting" class="form-button form-button--host">
@@ -14,13 +12,16 @@
 </template>
 
 <script>
+import { generateRandomGameId, randomAnimal } from '../lib/utils/randomizer.js'
+
 export default {
     name: 'CreateGameForm',
-    props: ['host', 'join', 'defaultFriendlyName', 'defaultGameId'],
+    props: ['host', 'join'],
     data: function() {
+        const animal = randomAnimal()
         return {
-            friendlyName: this.defaultFriendlyName,
-            gameId: this.defaultGameId
+            friendlyName: animal.charAt(0).toUpperCase() + animal.substring(1),
+            gameId: generateRandomGameId()
         }
     },
     created: function() {

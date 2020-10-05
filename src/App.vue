@@ -8,18 +8,7 @@
             :defaultGameId="gameId"
             :defaultFriendlyName="friendlyName"
         />
-        <game-lobby
-            v-else
-            :isHost="isHost"
-            :gameId="gameId"
-            :clientState="state"
-            :transmittedServerState="transmittedServerState"
-            :client="gameClient"
-            :gameCanBeStarted="gameCanBeStarted"
-            :startGame="startGame"
-            :clientId="clientId"
-            :isCluePlayer="isCluePlayer"
-        />
+        <game-lobby v-else />
     </div>
 </template>
 
@@ -30,9 +19,22 @@ import { PubSubClient, handleMessageFromAbly } from './lib/p2p/ably'
 import { Identity } from './lib/utils/identity'
 import CreateGameForm from './components/CreateGameForm'
 import GameLobby from './components/GameLobby'
+import VueRouter from 'vue-router'
+import store from './store'
+
+const routes = [
+    { path: '/', component: CreateGameForm },
+    { path: '/:gameId', component: GameLobby }
+]
+
+const router = new VueRouter({
+    routes // short for `routes: routes`
+})
 
 export default {
     name: 'App',
+    router,
+    store,
     components: {
         'create-game-form': CreateGameForm,
         'game-lobby': GameLobby
