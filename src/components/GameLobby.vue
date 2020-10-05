@@ -1,5 +1,14 @@
 <template>
     <div id="activeGame" class="game-info">
+        <div v-if="!hasJoined">
+            <form class="form">
+                <label for="name-name">Enter your name</label>
+                <input type="text" name="name" v-model="playerFriendlyName" />
+                <button v-on:click="join" class="form-button">
+                    Join game
+                </button>
+            </form>
+        </div>
         <div class="game-lobby" v-if="gameCanBeStarted">
             <invite-link :game-id="gameId"></invite-link>
             <connected-players-summary
@@ -65,9 +74,13 @@ import DuplicateWordsStage from './GameStages/DuplicateWordsStage'
 import ConnectedPlayersSummary from './ConnectedPlayersSummary'
 import PlayerGuessStage from './GameStages/PlayerGuessStage'
 import RoundEndStage from './GameStages/RoundEndStage'
+import { mapState, mapMutations, mapGetters, mapActions } from 'vuex'
 
 export default {
     name: 'GameLobby',
+    data: function() {
+        return { playerFriendlyName: this.friendlyName }
+    },
     components: {
         'start-game-prompt': StartGamePrompt,
         'loading-placeholder': LoadingPlaceholder,
@@ -78,17 +91,33 @@ export default {
         'player-guess-stage': PlayerGuessStage,
         'round-end-stage': RoundEndStage
     },
-    props: [
-        'gameId',
-        'client',
-        'clientState',
-        'transmittedServerState',
-        'isHost',
-        'startGame',
-        'gameStarted',
-        'gameCanBeStarted',
-        'clientId',
-        'isCluePlayer'
-    ]
+    computed: {
+        ...mapState(['gameId']),
+        ...mapGetters([
+            'hasJoined',
+            'clientId',
+            'isHost',
+            'serverState',
+            'clientState',
+            'gameClient',
+            'isCluePlayer'
+        ]),
+        gameCanBeStarted: function() {
+            return this.serverState && !this.serverState.started
+        },
+        gameStarted: function() {
+            return this.clientState?.gameStarted
+        }
+    },
+    methods: {
+        ...mapMutations(['setGameId']),
+        ...mapActions(['join', 'startGame']),
+        joinGame: async function() {
+            this.join({ friendlyName: this.friendlyName, gameId: this.gameId })
+        }
+    },
+    created: function() {
+        this.setGameId(this.$route.params.gameId)
+    }
 }
 </script>

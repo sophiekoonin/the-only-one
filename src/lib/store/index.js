@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { generateRandomGameId, randomAnimal } from '../utils/randomizer'
-import { P2PClient } from '../lib/p2p/p2pClient'
-import { P2PServer } from '../lib/p2p/p2pServer'
-import { PubSubClient, handleMessageFromAbly } from '../lib/p2p/ably'
-import { Identity } from '../lib/utils/identity'
+import { P2PClient } from '../p2p/p2pClient'
+import { P2PServer } from '../p2p/p2pServer'
+import { PubSubClient, handleMessageFromAbly } from '../p2p/ably'
+import { Identity } from '../utils/identity'
 Vue.use(Vuex)
 
 const animal = randomAnimal()
@@ -31,7 +31,8 @@ export default new Vuex.Store({
             )
         },
         gameClient: state => state.p2pClient?.gameClient,
-        isHost: state => state.p2pServer != null
+        isHost: state => state.p2pServer != null,
+        hasJoined: state => state.p2pClient != null
     },
     mutations: {
         setP2pClient(state, client) {
@@ -85,6 +86,9 @@ export default new Vuex.Store({
             const p2pClient = new P2PClient(identity, this.gameId, pubSubClient)
             commit('setP2pClient', p2pClient)
             await state.p2pClient.connect()
+        },
+        async startGame({ state }) {
+            await state.p2pServer?.startGame()
         }
     }
 })

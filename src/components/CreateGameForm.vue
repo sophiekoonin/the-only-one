@@ -5,18 +5,14 @@
         <button v-on:click="startHosting" class="form-button form-button--host">
             Host a Session
         </button>
-        <button v-on:click="joinGame" class="form-button">
-            Join a Session
-        </button>
     </form>
 </template>
 
 <script>
 import { generateRandomGameId, randomAnimal } from '../lib/utils/randomizer.js'
-
+import { mapActions } from 'vuex'
 export default {
     name: 'CreateGameForm',
-    props: ['host', 'join'],
     data: function() {
         const animal = randomAnimal()
         return {
@@ -24,21 +20,13 @@ export default {
             gameId: generateRandomGameId()
         }
     },
-    created: function() {
-        if (window.location.search !== '') {
-            const uri = window.location.search.substring(1)
-            const params = new URLSearchParams(uri)
-            this.gameId = params.get('gameId')
-        }
-    },
     methods: {
-        startHosting: async function(evt) {
+        ...mapActions(['host']),
+        startHosting: function(evt) {
+            console.log(this)
             evt.preventDefault()
-            this.host(this.friendlyName, this.gameId)
-        },
-        joinGame: async function(evt) {
-            evt.preventDefault()
-            this.join(this.friendlyName, this.gameId)
+            this.host({ friendlyName: this.friendlyName, gameId: this.gameId })
+            this.$router.push(`/${this.gameId}`)
         }
     }
 }

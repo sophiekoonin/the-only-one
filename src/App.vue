@@ -1,125 +1,17 @@
 <template>
     <div id="app">
         <h1>only one</h1>
-        <create-game-form
-            :host="host"
-            :join="join"
-            :defaultGameId="gameId"
-            :defaultFriendlyName="friendlyName"
-        />
+        <create-game-form />
     </div>
 </template>
 
 <script>
-import { P2PClient } from './lib/p2p/p2pClient'
-import { P2PServer } from './lib/p2p/p2pServer'
-import { PubSubClient, handleMessageFromAbly } from './lib/p2p/ably'
-import { Identity } from './lib/utils/identity'
 import CreateGameForm from './components/CreateGameForm'
-import GameLobby from './components/GameLobby'
-import VueRouter from 'vue-router'
-import store from './store'
-
-/*
- 
-        <game-lobby v-else />
-        */
-const routes = [{ path: '/:gameId', component: GameLobby }]
-
-const router = new VueRouter({
-    routes // short for `routes: routes`
-})
 
 export default {
     name: 'App',
-    router,
-    store,
     components: {
         'create-game-form': CreateGameForm
-    },
-
-    // computed: {
-    //     state: function() {
-    //         return this.p2pClient?.state
-    //     },
-    //     transmittedServerState: function() {
-    //         return this.p2pClient?.serverState
-    //     },
-    //     joinedOrHosting: function() {
-    //         return this.p2pClient != null || this.p2pServer != null
-    //     },
-    //     isHost: function() {
-    //         return this.p2pServer != null
-    //     },
-    //     gameStarted: function() {
-    //         return this.p2pClient?.state?.gameStarted
-    //     },
-    //     gameCanBeStarted: function() {
-    //         return (
-    //             this.transmittedServerState &&
-    //             !this.transmittedServerState.started
-    //         )
-    //     },
-    //     gameClient: function() {
-    //         return this.p2pClient?.gameClient
-    //     },
-    //     clientId: function() {
-    //         return this.p2pClient?.identity?.clientId
-    //     },
-    //     turnPlayer: function() {
-    //         return this.transmittedServerState?.turnPlayer
-    //     },
-    //     isCluePlayer: function() {
-    //         const turnPlayer = this.turnPlayer?.clientId
-    //         return (
-    //             turnPlayer != null &&
-    //             this.clientId != null &&
-    //             turnPlayer !== this.clientId
-    //         )
-    //     }
-    // },
-    methods: {
-        host: async function(friendlyName, gameId) {
-            this.gameId = gameId
-            this.friendlyName = friendlyName
-
-            const pubSubClient = new PubSubClient((message, metadata) => {
-                handleMessageFromAbly(
-                    message,
-                    metadata,
-                    this.p2pClient,
-                    this.p2pServer
-                )
-            })
-
-            const identity = new Identity(this.friendlyName)
-            this.p2pServer = new P2PServer(identity, this.gameId, pubSubClient)
-            this.p2pClient = new P2PClient(identity, this.gameId, pubSubClient)
-
-            await this.p2pServer.connect()
-            await this.p2pClient.connect()
-        },
-        join: async function(friendlyName, gameId) {
-            this.gameId = gameId
-            this.friendlyName = friendlyName
-
-            const pubSubClient = new PubSubClient((message, metadata) => {
-                handleMessageFromAbly(
-                    message,
-                    metadata,
-                    this.p2pClient,
-                    this.p2pServer
-                )
-            })
-
-            const identity = new Identity(this.friendlyName)
-            this.p2pClient = new P2PClient(identity, this.gameId, pubSubClient)
-
-            await this.p2pClient.connect()
-        },
-        startGame: async function() {
-            this.p2pServer?.startGame()
-        }
     }
 }
 </script>

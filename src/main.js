@@ -1,8 +1,19 @@
-import Vue from 'vue';
-import App from './App.vue';
+import Vue from 'vue'
+import App from './App.vue'
+import VueRouter from 'vue-router'
+import store from './lib/store'
+import GameLobby from './components/GameLobby'
 
-Vue.config.productionTip = false;
+const routes = [{ path: '/:gameId', component: GameLobby }]
+
+export const router = new VueRouter({
+    routes // short for `routes: routes`
+})
+
+Vue.config.productionTip = false
 
 new Vue({
-  render: (h) => h(App),
-}).$mount('#app');
+    router,
+    store,
+    render: (h) => h(App)
+}).$mount('#app')
