@@ -21,6 +21,7 @@ export class GameStateMachine {
             words: [],
             clues: [],
             dupes: [],
+            guess: null,
             msInCurrentStep: 0,
             currentTurnIndex: -1,
             activePlayers: [],

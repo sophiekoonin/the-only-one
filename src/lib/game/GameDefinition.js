@@ -34,10 +34,10 @@ export class GameClient {
         })
     }
 
-    async submitGuess(word) {
+    async submitGuess(guess) {
         this.channel.sendMessage({
-            kind: GameStageMessageTypes.SUBMIT_GUESS_RESPONSE,
-            word
+            kind: GameStageMessageTypes.PLAYER_GUESS_RESPONSE,
+            guess
         })
     }
 }

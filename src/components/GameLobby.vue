@@ -38,6 +38,20 @@
                 :clientId="clientId"
                 :isCluePlayer="isCluePlayer"
             />
+            <player-guess-stage
+                :state="clientState"
+                :transmittedServerState="transmittedServerState"
+                :client="client"
+                :clientId="clientId"
+                :isCluePlayer="isCluePlayer"
+            />
+            <round-end-stage
+                :state="clientState"
+                :transmittedServerState="transmittedServerState"
+                :client="client"
+                :clientId="clientId"
+                :isCluePlayer="isCluePlayer"
+            />
         </div>
     </div>
 </template>
@@ -49,6 +63,8 @@ import InviteLink from './InviteLink'
 import SubmitWordStage from './GameStages/SubmitWordStage'
 import DuplicateWordsStage from './GameStages/DuplicateWordsStage'
 import ConnectedPlayersSummary from './ConnectedPlayersSummary'
+import PlayerGuessStage from './GameStages/PlayerGuessStage'
+import RoundEndStage from './GameStages/RoundEndStage'
 
 export default {
     name: 'GameLobby',
@@ -58,7 +74,9 @@ export default {
         'invite-link': InviteLink,
         'connected-players-summary': ConnectedPlayersSummary,
         'submit-word-stage': SubmitWordStage,
-        'duplicate-words-stage': DuplicateWordsStage
+        'duplicate-words-stage': DuplicateWordsStage,
+        'player-guess-stage': PlayerGuessStage,
+        'round-end-stage': RoundEndStage
     },
     props: [
         'gameId',

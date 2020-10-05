@@ -53,7 +53,7 @@ export class PlayerGuessHandler {
         }
 
         if (message.kind === GameStageMessageTypes.PLAYER_GUESS_RESPONSE) {
-            state.guess = message.metadata.guess
+            state.guess = message.guess
             this.playerHasGuessed = true
         }
     }

@@ -5,7 +5,8 @@ export class EndHandler {
         context.channel.sendMessage({
             kind: 'instruction',
             type: GameStageMessageTypes.SHOW_RESULT,
-            guess: state.guess
+            guess: state.guess,
+            word: state.words[state.words.length - 1]
         })
         return { complete: true }
     }
